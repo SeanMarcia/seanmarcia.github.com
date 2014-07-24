@@ -1,0 +1,482 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CI Servers for Fun and Profit - Poignant Code</title>
+  <meta name="author" content="Sean Marcia">
+
+  
+  <meta name="description" content="I turned an old desktop into a CI server and then for fun I connected a green and a red lava lamp into it to go off when the tests are passing or not &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://Poignantcode.com/blog/2012/10/24/ci-servers-for-fun-and-profit/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Poignant Code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42412754-1', 'poignantcode.com');
+  ga('send', 'pageview');
+
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Poignant Code</a></h1>
+  
+    <h2>“when you don't create things, you become defined by your tastes rather than ability. your tastes only narrow & exclude people. so create.” ― Why The Lucky Stiff</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:Poignantcode.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CI Servers for Fun and Profit</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-24T10:18:00-04:00" pubdate data-updated="true">Oct 24<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I turned an old desktop into a CI server and then for fun I connected a green and a red lava lamp into it to go off when the tests are passing or not. It was a pretty simple process with only a few gotchas.</p>
+
+<!-- more -->
+
+
+<p>Equipment Used:</p>
+
+<ul>
+<li><a href="http://www.x10.com/automation/ck18a_s_ps32.html">X10 Firecracker Kit</a></li>
+<li>Two lava lamps. (I used green and red)</li>
+<li>An old desktop computer</li>
+</ul>
+
+
+<p>Programs/Software Used:</p>
+
+<ul>
+<li><a href="https://github.com/thoughtworks/cruisecontrol.rb">CruiseControl.rb</a></li>
+<li><a href="http://www.pantz.org/software/cron/croninfo.html">Cron/Crontab</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Expect">Unix tools (Expect)</a></li>
+</ul>
+
+
+<hr />
+
+<h3>First steps</h3>
+
+<p>I am assuming that you have already grabbed an old desktop computer and installed Ubuntu on it.</p>
+
+<p>If you are new to Ubuntu you may run into the same annoying issue of needing to enter your ssh passphrase each time you do a git pull. Lucky Ubuntu, like other unix based systems, comes with <a href="http://manpages.ubuntu.com/manpages/precise/en/man1/ssh-agent.1.html">ssh-agent</a> which is a program to hold your ssh private keys. Combine this with <a href="http://manpages.ubuntu.com/manpages/precise/en/man1/ssh-agent.1.html">ssh-add</a> and you won&#8217;t need to enter your password again. I use the zsh shell so you might need to change that but for me the process went as follows:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh-agent zsh
+</span><span class='line'>ssh-add
+</span><span class='line'>Enter passphrase for /home/sean/.ssh/id_rsa: 
+</span><span class='line'>Identity added: /home/sean/.ssh/id_rsa (/home/sean/.ssh/id_rsa)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I used the bottlerocket package to communicate with the serial port controller on the x10 firecracker kit. It was fairly trivial to install:</p>
+
+<p>Installing bottlerocket:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install bottlerocket</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I had a couple issues with permissions of both my user and having access to the open serial port. These were fixed with the following:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo adduser sean dialout
+</span><span class='line'>sudo chmod o+rw /dev/ttyS0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should note that bottlerocket defaults to the serial port ttyS0 so if you have plugged it into a different one you&#8217;ll need to update accordingly. If you aren&#8217;t sure which serial port is active run the following command to see which serial port is enabled:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>dmesg | grep tty</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Which will show you what you need to know, you can see from the second line which serial port is on the expect port of ttyS0:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[    0.000000] console [tty0] enabled
+</span><span class='line'>[    4.244997] serial8250: ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A
+</span><span class='line'>[    4.320518] 00:07: ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A
+</span><span class='line'>[    4.356133] 0000:00:03.3: ttyS4 at I/O 0xecb8 (irq = 17) is a 16550A</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I set up a cron job to do a git pull on my repo every minute which essentially keeps it live and synced. I had a a problem with my cron job since it asks for my ssh key password and wasn&#8217;t allowing the cron to run. So if the solution above with the ssh-agent doesn&#8217;t work or stops working, you can fix it with the a similar shell script <code>pull.sh</code>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/usr/bin/env zsh 
+</span><span class='line'>
+</span><span class='line'>password="your ssh password"
+</span><span class='line'>sourcedest="/home/sean/ruby/repository"
+</span><span class='line'>cd $sourcedest
+</span><span class='line'>
+</span><span class='line'>echo "Updating Source..."
+</span><span class='line'>expect &lt;&lt;- DONE
+</span><span class='line'>  set timeout -1
+</span><span class='line'>
+</span><span class='line'>  spawn git pull
+</span><span class='line'>  match_max 100000
+</span><span class='line'>
+</span><span class='line'>  # Look for passwod prompt
+</span><span class='line'>  expect "*?:*"
+</span><span class='line'>  # Send password aka $password
+</span><span class='line'>  send -- "$password\r"
+</span><span class='line'>  expect eof
+</span><span class='line'>DONE</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I set up my cron job with <code>crontab -e</code> and inserted the following at the end:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>*/1 * * * * /home/sean/pull.sh</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With that I have my project installed and checking for updates. Now to install <code>cruisecontrol.rb</code>. I went with cruisecontrol.rb because it is simple to install and is easy to hook into a project.</p>
+
+<p>Start by cloning the following project:</p>
+
+<p><code>git://github.com/thoughtworks/cruisecontrol.rb.git</code></p>
+
+<p>Then go into you cruisecontrol directory and run the following:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>./cruise add myproject -r /home/sean/ruby/repository -s git</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now it is monitoring your project and you can view the cruisecontrol dashboard by going to <code>localhost:3333</code>.<br/>
+Integration with bottlerocket is extremely simple. What I did was turn on the green lamp and the red on off if the build passes and do the reverse if it doesn&#8217;t pass. The following is the code I added into cruisecontrol:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#lib/builder_plugins/builder_status.rb</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">build_finished</span><span class="p">(</span><span class="n">build</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">build</span><span class="o">.</span><span class="n">successful?</span>
+</span><span class='line'>      <span class="nb">system</span><span class="p">(</span><span class="s2">&quot;br a1 on&quot;</span><span class="p">)</span>
+</span><span class='line'>      <span class="nb">system</span><span class="p">(</span><span class="s2">&quot;br a2 off&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>     <span class="nb">system</span><span class="p">(</span><span class="s2">&quot;br a2 on&quot;</span><span class="p">)</span>
+</span><span class='line'>     <span class="nb">system</span><span class="p">(</span><span class="s2">&quot;br a1 off&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Like I mentioned, I only have two lamps so I am just checking if the build was successful or not. There are several more options like <code>build.failed?</code> and <code>build.incomplete?</code> that are detailed on in the <a href="http://cruisecontrolrb.thoughtworks.com/documentation/plugins">cruisecontrol.rb plugin documentation</a> that you could extend your project if you had more lamps. Personally, I debated keeping the green and red for successful and failed and then adding in some sort of noise for incomplete.</p>
+
+<p>The final gotcha I encountered was that the build would pass even though I had failing tests. After some research it turns out that this is specific to the the version of rails we are using and the exit signal it sends when it finishes its tests and can be fixed by adding the following to your Rakefile which will send the appropriate (for cruisecontrol) exit signal:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">task</span> <span class="ss">:cruise</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;rspec spec/*&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="vg">$?</span> <span class="o">!=</span> <span class="mi">0</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<hr />
+
+<h2>Pictures!</h2>
+
+<h4>Started with an old desktop</h4>
+
+<p><img src="/images/ci2.jpg"></p>
+
+<h4>Installed Ubuntu on it</h4>
+
+<p><img src="/images/ci1.jpg"></p>
+
+<h4>Received the X10 controls</h4>
+
+<p><img src="/images/ci3.jpg"></p>
+
+<h4>Serial Port Controller</h4>
+
+<p><img src="/images/ci4.jpg"></p>
+
+<h4>X10 Wireless Receivers</h4>
+
+<p><img src="/images/ci5.jpg"></p>
+
+<h4>Lava Lamps!</h4>
+
+<p><img src="/images/ci6.jpg"></p>
+
+<h4>Lava Lamps In Action</h4>
+
+<p>I think I may need to get a night time shot the liquid is looking cloudy.</p>
+
+<p><img src="/images/ci7.jpg"></p>
+
+<hr />
+
+<h3>What&#8217;s up next?</h3>
+
+<p>I recently had the opportunity to play with a <a href="http://www.raspberrypi.org/">raspberry pi</a> at <a href="http://rubydcamp.org">rubydcamp</a> and I was hooked! I&#8217;ve added my name to the waiting list for one and when it arrives I&#8217;m going to see about turning it into a CI server with some fun features&#8230; So many ideas, so little time!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sean Marcia</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-24T10:18:00-04:00" pubdate data-updated="true">Oct 24<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Poignantcode.com/blog/2012/10/24/ci-servers-for-fun-and-profit/" data-via="seanmarcia" data-counturl="http://Poignantcode.com/blog/2012/10/24/ci-servers-for-fun-and-profit/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/14/validate-email-without-regex/" title="Previous Post: Validate Email without Regex">&laquo; Validate Email without Regex</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/12/05/sql-old-school/" title="Next Post: SQL Old School">SQL Old School &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section class="about">
+  <h1>About the author</h1>
+  <p>
+    <img src="/images/me.png"/>
+    I am a web developer who works at <a href="http://www.gmu.edu" target="_blank">GMU</a> - a university in Fairfax, Virginia.
+  </p>
+  <p>I love anything Web related, new technologies, all things nerdy, coffee roasting, homebrewing and things dealing with statistics and data.</p>
+  <p>I also co-founded and help run the best meetup group around, <a href="http://www.arlingtonruby.org" target="_blank">Arlington Ruby</a>!</p>
+  <ul id='social-links'>
+    <li class="atom"><a href="http://poignantcode.com/atom.xml" target="_blank" title="Subscribe to RSS"></a></li>
+    <li class="github"><a href="http://github.com/seanmarcia" target="_blank" title="Github account"></a></li>
+    <li class="twitter"><a href="http://twitter.com/#!/seanmarcia" target="_blank" title="Twitter stream"></a></li>
+    <li class="linkedin"><a href="http://goo.gl/jYmTN" target="_blank" title="LinkedIn profile"></a></li>
+  </ul>
+    
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/21/refactoring/">Refactoring</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/23/model-objects-caching/">Model Objects Caching</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/06/intro-to-devops/">Intro to DevOps</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/28/my-irssi-setup/">My Irssi Setup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/14/controller-clean-up/">Controller Clean-up</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/SeanMarcia">@SeanMarcia</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'SeanMarcia',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+<a class="twitter-timeline" href="https://twitter.com/seanmarcia" data-widget-id="356478747186176002">Tweets by @seanmarcia</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Sean Marcia -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress,</a> themed by <a href="mailto:teresa@poignantcode.com">Teresa Finn</a><a href</span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

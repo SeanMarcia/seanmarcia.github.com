@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Intro to DevOps - Poignant Code</title>
+  <meta name="author" content="Sean Marcia">
+
+  
+  <meta name="description" content="Update:
+I gave this talk at the DC Ruby Users Group and was asked which of the following solutions I chose and why. I chose Chef for provisioning and &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://Poignantcode.com/blog/2014/01/06/intro-to-devops/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Poignant Code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42412754-1', 'poignantcode.com');
+  ga('send', 'pageview');
+
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Poignant Code</a></h1>
+  
+    <h2>“when you don't create things, you become defined by your tastes rather than ability. your tastes only narrow & exclude people. so create.” ― Why The Lucky Stiff</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:Poignantcode.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Intro to DevOps</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-06T11:26:00-05:00" pubdate data-updated="true">Jan 6<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><strong>Update</strong>:
+I gave this talk at the <a href="http://www.meetup.com/dcruby/events/101392262/">DC Ruby Users Group</a> and was asked which of the following solutions I chose and why. I chose Chef for provisioning and configuring servers mostly because I have friends in the Chef community but if I were to choose again, I would likely use Ansible as Chef is more power than I need since we only have three servers. I chose Capistrano for deployment because I&#8217;ve used it in the past and found it dead simple to use. For Continuous Integration I went with cruisecontrol.rb mostly because it is written in ruby and easy to <a href="http://poignantcode.com/blog/2012/10/24/ci-servers-for-fun-and-profit/">configure</a>. I use Airbrake for errors (but am looking into honeybadger) and monitoring with New Relic. I don&#8217;t aggregate my logs or monitor my servers other than what New Relic and Airbrake give mostly because it didn&#8217;t make sense with the small architecture we have. <strong>End Update</strong></p>
+
+<h3></h3>
+
+<p>We used manage hosting at work and when we recently scaled out our architecture we found that at our host, despite us having a single application, increased the prices proportionally with the number of servers. We understand that each additional server costs an additional fee but there was no break on support costs. We know that they, like a lot of companies, use AWS for infrastructure and so we are able to price out what our instances cost and saw that we were paying a premium of approximately $150 a month for the insurance of being able to call someone up in case of trouble or if we are having any issues. The problem and what we couldn&#8217;t justify the extra expense for was that the premium is levied on each server so having 2 application servers rather than one which would not double the number of support calls or use of their services would still double our support costs. While we have avoided having a DevOps team ourselves it finally made sense to learn the tools. I was surprising how easy and &#8220;rubylike&#8221; many of them were. I decided to share what I learned because we have recently had members of the meet-up group I help organize asking what exactly DevOps is.</p>
+
+<!-- more -->
+
+
+<h2>What is DevOps?</h2>
+
+<p>You hear a lot of people talk about DevOps but generally they are saying things like Chef, Puppet, Nagios and so forth. While those are all components of DevOps, I did some looking and the best description I could find was &#8220;System administrators participating in an agile development process alongside developers and using many of the same agile techniques for their systems work.&#8221; I&#8217;m assuming if you are reading this you are a developer who was tasked with becoming their companies DevOps person.</p>
+
+<h2>What are the required skills needed for DevOps?</h2>
+
+<p>I found this to be a pretty difficult question to answer and it made sense to differentiate between technical and non-technical skills.</p>
+
+<p>Assuming you are developer and have those skills covered, you will need to do a deep dive into system administration and all the requisite unix skills. While the list of unix skills is quite expansive (grep, sed, cat, chmod, du, shell scripting, TCP/IP networking, DNS, mail, virtualization, and so on) the two books I own that are excellent reference manuals are:</p>
+
+<p><img src="/images/sysadmin1.jpg"></p>
+
+<p>and</p>
+
+<p><img src="/images/sysadmin2.jpg"></p>
+
+<h2>Responsibilities of DevOps</h2>
+
+<p>As the DevOps person, these are the things you are going to want to think about:
+* provisioning virtual machines
+* configuring network devices and servers
+* deploying you applications
+* collecting logs
+* monitoring applications
+* monitoring your hardware
+* monitoring application performance
+<strong>You want to automate everything</strong></p>
+
+<h3>Provisioning and Configuring Servers</h3>
+
+<ul>
+<li>Chef</li>
+<li>Ansible</li>
+<li>Puppet</li>
+<li>Shell Scripts</li>
+<li>Manual</li>
+</ul>
+
+
+<p>Chef, Ansible and Puppet all work in a similar fashion. You write recipes, manifests or playbooks so you can repeat the same actions over and over. Repeatability is paramount as you want to be able create an identical environment every time you spin up a server. This helps in consistency and ensures that you will be able to easily identify and track down errors. If each server is configured differently you might mistake a configuration conflict with a an application error. You will need to pick a cloud provider like AWS, Rackspace or Digital Ocean as a place for deploying your servers to.</p>
+
+<h3>Deploying your Application</h3>
+
+<p>Part of the deployment process and something that is under the purview of DevOps is the deployment process. An example deployment process might look something like this:</p>
+
+<ol>
+<li>Continuous Integration shows all tests are passing.</li>
+<li>Deploy the Application to your testing environment.</li>
+<li>QA tests the Application and approves deployment.</li>
+<li>Deploy the Application to production.</li>
+</ol>
+
+
+<p>All the steps in there are monitored by DevOps. DevOps monitors and configures your CI server, spins up testing environments and deploys to that environment and then deploys to production.</p>
+
+<p>There are several good choices for CI, some of the popular choices are:</p>
+
+<ul>
+<li>Jenkins</li>
+<li>Travis</li>
+<li>CruiseControl</li>
+</ul>
+
+
+<p>There are also numerous options for deploying your application such as:</p>
+
+<ul>
+<li>Capistrano</li>
+<li>Fabric</li>
+<li>Shell Scripts</li>
+</ul>
+
+
+<p>It is possible to your provisioning tool (like Chef) to also handle the deploying of your application but personally I like the separation of responsibilities.</p>
+
+<h3>Log Collection</h3>
+
+<p>Having all your server logs in one place is extremely valuable especially when you are trying to track down errors. You will want to brush up on your Unix commands like grep to make searching and parsing these logs easy. A couple of popular logging applications are:</p>
+
+<ul>
+<li>Loggly</li>
+<li>LogStash</li>
+</ul>
+
+
+<h3>Monitoring Applications</h3>
+
+<p>Monitoring and application performance tools go hand in hand since you typically monitor for performance uptime. In the Ruby/Rails community the two most popular error monitoring services that will let you know when exceptions have occurred are:</p>
+
+<ul>
+<li>Airbrake</li>
+<li>Honeybadger</li>
+</ul>
+
+
+<p>For monitoring things like how fast pages are loading, which pages are problem pages, CPU usage, memory and so on, the two most popular performance monitoring tools are:</p>
+
+<ul>
+<li>New Relic</li>
+<li>Scout</li>
+</ul>
+
+
+<h3>Monitoring your Hardware/Servers</h3>
+
+<p>You will want to monitor that unix services are running (ssh, mail, pop, http) in addition to seeing if a server, load balancer or db server is down. Good monitoring tools will also be customizable to show how much space is left on a give server in a given directory, monitor your databases and how long a connect takes as well as the lag time to the slave dbs. Monitoring software is also configurable to send alerts that you can customize for each of these things. The most popular hardware monitoring software is:</p>
+
+<ul>
+<li>Nagios</li>
+<li>Icinga</li>
+<li>Sensu</li>
+<li>Zabbix</li>
+</ul>
+
+
+<h2>Non Technical Skills</h2>
+
+<p>DevOps also needs to be aware of what the business side is doing. A good read on more about this can be had with the following book:</p>
+
+<p><img src="/images/phoenixproject.png"></p>
+
+<p>Two especially important areas for DevOps to work in conjunction with are:</p>
+
+<ul>
+<li>Sales</li>
+<li>Marketing</li>
+</ul>
+
+
+<p>If it isn&#8217;t apparent why, just imagine if a marketing team were to run a series of advertisements; perhaps at an event like the Superbowl where your application will be heard about by millions and then get swamped with traffic afterwards. If you are aware of the coming traffic you can spin up extra servers to handle the traffic so your customers are not left dissatisfied. A similar story is easy to imagine with sales. If your sales team is promising features to clients, as DevOps you need to be aware of that so you can ensure you have environments for QA to test and to be sure that the features go through the full testing process.</p>
+
+<h3>Maintenance</h3>
+
+<p>I’ve included maintenance in here because you are going to have to deal with budget/finance people. If you are paying for a support contract with new relic or airbrake or you want to start paying for a different service of some sort. The money people tend to want to know about these contracts, how long they will last, how much they will cost and so on. The other part of maintenance, such as updating and patching software often can take a LOT of time. If the DevOps team is planning to upgrade/patch/change from ubuntu 10.04 to 13.04 because 10.04 doesn’t fully support a new feature you want to add you might be looking at a multi day or event week process as you upgrade everything. People will need to know that devops will be out of commission or devoting a lot of time to it.</p>
+
+<h2>Benefits</h2>
+
+<p>Assuming you have done all the DevOps things correctly the benefits you are looking at are:</p>
+
+<ul>
+<li>Faster and easier deployments</li>
+<li>Easier to roll back from mistakes</li>
+<li>Less Problems to fix</li>
+<li>Less time spent fixing things and more time developing</li>
+<li>Faster roll out of features</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sean Marcia</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-06T11:26:00-05:00" pubdate data-updated="true">Jan 6<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Poignantcode.com/blog/2014/01/06/intro-to-devops/" data-via="seanmarcia" data-counturl="http://Poignantcode.com/blog/2014/01/06/intro-to-devops/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/08/28/my-irssi-setup/" title="Previous Post: My Irssi Setup">&laquo; My Irssi Setup</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/03/23/model-objects-caching/" title="Next Post: Model Objects Caching">Model Objects Caching &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section class="about">
+  <h1>About the author</h1>
+  <p>
+    <img src="/images/me.png"/>
+    I am a web developer who works at <a href="http://www.gmu.edu" target="_blank">GMU</a> - a university in Fairfax, Virginia.
+  </p>
+  <p>I love anything Web related, new technologies, all things nerdy, coffee roasting, homebrewing and things dealing with statistics and data.</p>
+  <p>I also co-founded and help run the best meetup group around, <a href="http://www.arlingtonruby.org" target="_blank">Arlington Ruby</a>!</p>
+  <ul id='social-links'>
+    <li class="atom"><a href="http://poignantcode.com/atom.xml" target="_blank" title="Subscribe to RSS"></a></li>
+    <li class="github"><a href="http://github.com/seanmarcia" target="_blank" title="Github account"></a></li>
+    <li class="twitter"><a href="http://twitter.com/#!/seanmarcia" target="_blank" title="Twitter stream"></a></li>
+    <li class="linkedin"><a href="http://goo.gl/jYmTN" target="_blank" title="LinkedIn profile"></a></li>
+  </ul>
+    
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/21/refactoring/">Refactoring</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/23/model-objects-caching/">Model Objects Caching</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/06/intro-to-devops/">Intro to DevOps</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/28/my-irssi-setup/">My Irssi Setup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/14/controller-clean-up/">Controller Clean-up</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/SeanMarcia">@SeanMarcia</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'SeanMarcia',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+<a class="twitter-timeline" href="https://twitter.com/seanmarcia" data-widget-id="356478747186176002">Tweets by @seanmarcia</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Sean Marcia -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress,</a> themed by <a href="mailto:teresa@poignantcode.com">Teresa Finn</a><a href</span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
