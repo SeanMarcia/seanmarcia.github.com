@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Poignant Code]]></title>
-  <link href="http://poignantcode.com/atom.xml" rel="self"/>
-  <link href="http://poignantcode.com/"/>
-  <updated>2014-07-24T15:56:03-04:00</updated>
-  <id>http://poignantcode.com/</id>
+  <link href="http://SeanMarcia.github.io/atom.xml" rel="self"/>
+  <link href="http://SeanMarcia.github.io/"/>
+  <updated>2014-07-24T16:17:12-04:00</updated>
+  <id>http://SeanMarcia.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Refactoring towards Celluloid]]></title>
-    <link href="http://poignantcode.com/blog/2014/07/21/refactoring/"/>
+    <link href="http://SeanMarcia.github.io/blog/2014/07/21/refactoring/"/>
     <updated>2014-07-21T00:12:00-04:00</updated>
-    <id>http://poignantcode.com/blog/2014/07/21/refactoring</id>
+    <id>http://SeanMarcia.github.io/blog/2014/07/21/refactoring</id>
     <content type="html"><![CDATA[<p>(note: this blog post is work in progress, I figure since it was getting excessively long I would post what I have.)</p>
 
 <h3 id="broken-gets-fixed-but-crap-lasts-forever">“Broken gets fixed but crap lasts forever.”</h3>
