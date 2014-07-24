@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2014/07/21/refactoring/</loc>
+    <lastmod>2014-07-21T00:12:00-04:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  
+  <url>
+    <loc>http://poignantcode.com/blog/archives/</loc>
+    <lastmod>2014-07-24T15:56:03-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/</loc>
+    <lastmod>2014-07-24T15:56:03-04:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2012/08/20/ive-moved-my-blog-to-octopress/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2012/08/21/screen-vs-tmux/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2012/09/14/validate-email-without-regex/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2012/10/24/ci-servers-for-fun-and-profit/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2012/12/05/sql-old-school/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2012/12/06/sql-old-school-part-2/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2013/01/22/ruby-koans/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2013/01/22/ruby-koans-part-2/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2013/03/01/minitest/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2013/06/15/fibonacci/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2013/07/16/vps-set-up/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2013/07/28/why-i-dont-like-send/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2013/08/14/controller-clean-up/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2013/08/28/my-irssi-setup/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2014/01/06/intro-to-devops/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2014/03/23/model-objects-caching/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/2014/07/21/refactoring/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://poignantcode.com/blog/page/2/index.html</loc>
+    <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+</urlset>

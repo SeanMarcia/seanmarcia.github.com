@@ -1,0 +1,653 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>VPS Set Up - Poignant Code</title>
+  <meta name="author" content="Sean Marcia">
+
+  
+  <meta name="description" content="I recently built a rails app that needed more than the free level provided at Heroku so I decided to provision my own VPS and I thought I&#8217;d &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://Poignantcode.com/blog/2013/07/16/vps-set-up/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Poignant Code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42412754-1', 'poignantcode.com');
+  ga('send', 'pageview');
+
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Poignant Code</a></h1>
+  
+    <h2>“when you don't create things, you become defined by your tastes rather than ability. your tastes only narrow & exclude people. so create.” ― Why The Lucky Stiff</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:Poignantcode.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">VPS Set Up</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-16T15:59:00-04:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I recently built a rails app that needed more than the free level provided at Heroku so I decided to provision my own VPS and I thought I&#8217;d give the steps I followed to help someone else doing the same thing.</p>
+
+<h3>I&#8217;m making the following assumptions:</h3>
+
+<ul>
+<li>You have a github account and know how to <a href="https://help.github.com/articles/generating-ssh-keys">generate SSH keys</a>.</li>
+<li>You can work with a command line editor like vim/emacs/pico</li>
+<li>Your using a debian based linux distro on your VPS, I&#8217;m using Ubuntu 12.04 LTS</li>
+</ul>
+
+
+<p>If you don&#8217;t have a VPS, most people recommend <a href="https://www.linode.com/">Linode</a> since it beats both <a href="http://aws.amazon.com/ec2/">EC2</a> and <a href="https://www.digitalocean.com/">Digital Ocean</a> when <a href="http://www.cosninix.com/wp/2013/06/amazon-aws-ec2-linode-digitalocean-cloudserver-showdown/">compared head-to-head</a> but since I was being thrifty and I didn&#8217;t need that level of performance, I went with Digital Ocean&#8217;s cheapest plan.</p>
+
+<p>Assuming you have your server provisioned, you need to ssh into it, add a user (you don&#8217;t need to create a user with the name Sean, but you can) and give the user sudo access.</p>
+
+<!-- more -->
+
+
+<hr />
+
+<h2>Setting up the server</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh root@server-ip-address</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ adduser sean
+</span><span class='line'>Adding user `sean' ...
+</span><span class='line'>Adding new group `sean' (1001) ...
+</span><span class='line'>Adding new user `sean' (1001) with group `sean' ...
+</span><span class='line'>Creating home directory `/home/sean' ...
+</span><span class='line'>Copying files from `/etc/skel' ...
+</span><span class='line'>Enter new UNIX password:
+</span><span class='line'>Retype new UNIX password:
+</span><span class='line'>passwd: password updated successfully
+</span><span class='line'>Changing the user information for sean
+</span><span class='line'>Enter the new value, or press ENTER for the default
+</span><span class='line'>        Full Name []: Sean
+</span><span class='line'>        Room Number []:
+</span><span class='line'>        Work Phone []:
+</span><span class='line'>        Home Phone []:
+</span><span class='line'>        Other []:
+</span><span class='line'>Is the information correct? [Y/n] y
+</span><span class='line'>$ </span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ visudo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Edit the file so that it looks something like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Defaults        env_reset
+</span><span class='line'>Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+</span><span class='line'>
+</span><span class='line'>root    ALL=(ALL:ALL) ALL
+</span><span class='line'>sean    ALL=(ALL:ALL) ALL
+</span><span class='line'>
+</span><span class='line'>%admin ALL=(ALL) ALL
+</span><span class='line'>
+</span><span class='line'>%sudo   ALL=(ALL:ALL) ALL</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should now exit your server and copy your public key to your server, you can copy and paste or just use the <code>scp</code> command. For me the command was:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>scp ~/.ssh/id_rsa.pub sean@server-ip-address:.ssh/authorized_keys</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now ssh back into your server using your public key. If this doesn&#8217;t work, ssh back in using your password you set when you created the account and do the following:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo vim /etc/ssh/sshd_config</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Set the following entries to yes in the <code>sshd_config</code> file:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>RSAAuthentication yes
+</span><span class='line'>PubkeyAuthentication yes</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After making the change, reload the the ssh configuration file:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo service ssh reload</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: if the <code>service</code> command failed run this command:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo /etc/init.d/ssh reload</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Exit the server and you should now be able to log in without using a password.
+Next disable password logins by again editing the sshd_config file and changing the following values to no:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ChallengeResponseAuthentication no
+</span><span class='line'>PasswordAuthentication no
+</span><span class='line'>UsePAM no</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Reload the ssh config as before. You should also at this point set up ssh keys on your server and add those keys to your github profile, assuming you are going to be deploying from github. <a href="https://help.github.com/articles/generating-ssh-keys">At the top of this article I posted a link to github with their directions on creating ssh keys</a>.</p>
+
+<hr />
+
+<h2>Installing Ruby</h2>
+
+<p>We should make sure our system is up to date before installing anything:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo apt-get update</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we can start with the actual ruby and rails installation. Before we can install rvm we need to install all the rvm dependencies.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo apt-get install build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then we install RVM</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ \curl -L https://get.rvm.io | bash</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then reload rvm.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ rvm reload</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then install ruby.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ rvm install 2.0.0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now install passenger.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ rvmsudo gem install passenger</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you want you can create a gemset for your application. If you are not planning on using your VPS for anything other than hosting this app this is probably not needed. Here is how you do it (my app is called pompeii.)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ rvm gemset create pompeii</span></code></pre></td></tr></table></div></figure>
+
+
+<hr />
+
+<h2>Webserver - Nginx</h2>
+
+<p>Now to install Nginx we first need to install the curl development headers with SSL support:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo apt-get install libcurl4-openssl-dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then install Nginx:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ rvmsudo passenger-install-nginx-module</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we need to configure Nginx for our application <code>vim /opt/nginx/conf/nginx.conf</code> and in the http section add the following:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>server {
+</span><span class='line'>    client_max_body_size 20M;
+</span><span class='line'>    listen       80;
+</span><span class='line'>  server_name mydomain.com;
+</span><span class='line'>  root /home/sean/pompeii/current/public;  # You'll want to change this to your application name/home directory
+</span><span class='line'>  passenger_enabled on;
+</span><span class='line'>
+</span><span class='line'>   location @app {
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You don&#8217;t strictly need to add the line <code>client_max_body_size 20M;</code> unless you plan on transferring large files to/from your app. Next we need to get the linode init script and make nginx start when the server starts with the following:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ wget -O init-deb.sh http://library.linode.com/assets/660-init-deb.sh
+</span><span class='line'>$ sudo mv init-deb.sh /etc/init.d/nginx
+</span><span class='line'>$ sudo chmod +x /etc/init.d/nginx
+</span><span class='line'>$ sudo /usr/sbin/update-rc.d -f nginx defaults</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then just restart Nginx and you are good to go:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo /etc/init.d/nginx stop
+</span><span class='line'>$ sudo /etc/init.d/nginx start</span></code></pre></td></tr></table></div></figure>
+
+
+<hr />
+
+<h2>Database - Postgres</h2>
+
+<p>Now on to installing our database. I used Postgresql that you install with the following command:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo apt-get install postgresql libpq-dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We need to give our application a role and give it the ability to create databases/tables and login.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo su - postgres
+</span><span class='line'>$ psql   # Enter the postgresql command line
+</span><span class='line'>CREATE ROLE sean WITH LOGIN CREATEDB;
+</span><span class='line'>\q</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now just create your database:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>createdb pompeii -O sean</span></code></pre></td></tr></table></div></figure>
+
+
+<hr />
+
+<h2>Deployment - Capistrano</h2>
+
+<p>Now we just need to set up capistrano and we are good to go. Just add the following gems to your gemfile:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;capistrano&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;rvm-capistrano&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then enter the following command from your command line on your development machine: <code>capify .</code>
+Your Capfile should look like this:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">load</span> <span class="s1">&#39;deploy&#39;</span>
+</span><span class='line'><span class="nb">load</span> <span class="s1">&#39;deploy/assets&#39;</span>
+</span><span class='line'><span class="nb">load</span> <span class="s1">&#39;config/deploy&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Your <code>deploy.rb</code> should look something like this:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;rvm/capistrano&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;bundler/capistrano&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">set</span> <span class="ss">:deploy_to</span><span class="p">,</span> <span class="s2">&quot;/home/sean/pompeii&quot;</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:repository</span><span class="p">,</span>  <span class="s2">&quot;https://github.com/SeanMarcia/pompeii.git&quot;</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:rvm_type</span><span class="p">,</span> <span class="ss">:user</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:rvm_ruby_string</span><span class="p">,</span> <span class="ss">:local</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:use_sudo</span><span class="p">,</span> <span class="kp">false</span>
+</span><span class='line'><span class="n">set</span> <span class="ss">:deploy_via</span><span class="p">,</span> <span class="ss">:remote_cache</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">set</span> <span class="ss">:user</span><span class="p">,</span> <span class="s2">&quot;sean&quot;</span>
+</span><span class='line'><span class="n">role</span> <span class="ss">:web</span><span class="p">,</span> <span class="s2">&quot;mywebip&quot;</span>
+</span><span class='line'><span class="n">role</span> <span class="ss">:app</span><span class="p">,</span> <span class="s2">&quot;mywebip&quot;</span>
+</span><span class='line'><span class="n">role</span> <span class="ss">:db</span><span class="p">,</span>  <span class="s2">&quot;mywebip&quot;</span><span class="p">,</span> <span class="ss">:primary</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">after</span> <span class="s2">&quot;deploy:restart&quot;</span><span class="p">,</span> <span class="s2">&quot;deploy:cleanup&quot;</span>
+</span><span class='line'><span class="n">after</span> <span class="s2">&quot;deploy&quot;</span><span class="p">,</span> <span class="s2">&quot;rvm:trust_rvmrc&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">namespace</span> <span class="ss">:deploy</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:start</span> <span class="k">do</span> <span class="p">;</span> <span class="k">end</span>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:stop</span> <span class="k">do</span> <span class="p">;</span> <span class="k">end</span>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:restart</span><span class="p">,</span> <span class="ss">:roles</span> <span class="o">=&gt;</span> <span class="ss">:app</span><span class="p">,</span> <span class="ss">:except</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:no_release</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="p">}</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">run</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">try_sudo</span><span class="si">}</span><span class="s2"> touch </span><span class="si">#{</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_path</span><span class="p">,</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span><span class="s1">&#39;restart.txt&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">namespace</span> <span class="ss">:rvm</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:trust_rvmrc</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">run</span> <span class="s2">&quot;rvm rvmrc trust </span><span class="si">#{</span><span class="n">release_path</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Assuming you want capistrano to setup and create the directories for you:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cap deploy:setup</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now test to make sure there are no errors with:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cap deploy:check</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Use cap deploy:cold the first time you deploy, after that `cap deploy&#8217; is going to be all you need.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cap deploy:cold</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally migrate your database and you should be good to go.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cap deploy:migrate</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is only a fraction of my deploy script, I have tasks in there to restart solr for search and to precompile my assets to speed up my deployment but this should be enough to get you going. Hopefully your site is now live and on the web!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sean Marcia</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-16T15:59:00-04:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Poignantcode.com/blog/2013/07/16/vps-set-up/" data-via="seanmarcia" data-counturl="http://Poignantcode.com/blog/2013/07/16/vps-set-up/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/15/fibonacci/" title="Previous Post: Fibonacci">&laquo; Fibonacci</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/07/28/why-i-dont-like-send/" title="Next Post: Why I Don't Like Send">Why I Don't Like Send &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section class="about">
+  <h1>About the author</h1>
+  <p>
+    <img src="/images/me.png"/>
+    I am a web developer who works at <a href="http://www.gmu.edu" target="_blank">GMU</a> - a university in Fairfax, Virginia.
+  </p>
+  <p>I love anything Web related, new technologies, all things nerdy, coffee roasting, homebrewing and things dealing with statistics and data.</p>
+  <p>I also co-founded and help run the best meetup group around, <a href="http://www.arlingtonruby.org" target="_blank">Arlington Ruby</a>!</p>
+  <ul id='social-links'>
+    <li class="atom"><a href="http://poignantcode.com/atom.xml" target="_blank" title="Subscribe to RSS"></a></li>
+    <li class="github"><a href="http://github.com/seanmarcia" target="_blank" title="Github account"></a></li>
+    <li class="twitter"><a href="http://twitter.com/#!/seanmarcia" target="_blank" title="Twitter stream"></a></li>
+    <li class="linkedin"><a href="http://goo.gl/jYmTN" target="_blank" title="LinkedIn profile"></a></li>
+  </ul>
+    
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/21/refactoring/">Refactoring</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/23/model-objects-caching/">Model Objects Caching</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/06/intro-to-devops/">Intro to DevOps</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/28/my-irssi-setup/">My Irssi Setup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/14/controller-clean-up/">Controller Clean-up</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/SeanMarcia">@SeanMarcia</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'SeanMarcia',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+<a class="twitter-timeline" href="https://twitter.com/seanmarcia" data-widget-id="356478747186176002">Tweets by @seanmarcia</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Sean Marcia -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress,</a> themed by <a href="mailto:teresa@poignantcode.com">Teresa Finn</a><a href</span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Model Objects Caching - Poignant Code</title>
+  <meta name="author" content="Sean Marcia">
+
+  
+  <meta name="description" content="At a recent meetup I was explaining the benefits of caching model objects and how it can help performance by reducing calls to your database. I was &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://Poignantcode.com/blog/2014/03/23/model-objects-caching/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Poignant Code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42412754-1', 'poignantcode.com');
+  ga('send', 'pageview');
+
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Poignant Code</a></h1>
+  
+    <h2>“when you don't create things, you become defined by your tastes rather than ability. your tastes only narrow & exclude people. so create.” ― Why The Lucky Stiff</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:Poignantcode.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Model Objects Caching</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-23T20:19:00-04:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>At a recent <a href="arlingtonruby.org">meetup</a> I was explaining the benefits of caching model objects and how it can help performance by reducing calls to your database. I was only able to give contrived examples at the time but I thought that since I recently had a use case that fell into this neighborhood I thought I&#8217;d share. I&#8217;ll note that Rails will, by default, write to the file system but for optimal performance you&#8217;ll want to use a memory based store like <a href="http://memcached.org/">memcached</a> or <a href="http://redis.io/">redis</a>.</p>
+
+<p>If you open up a Rails console and access information from your database you can see the time it spends looking up that information. For example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;&gt;</span> <span class="no">Article</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">6616</span><span class="p">)</span><span class="o">.</span><span class="n">title</span>
+</span><span class='line'>  <span class="no">Article</span> <span class="no">Load</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="n">ms</span><span class="p">)</span>  <span class="no">SELECT</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">*</span> <span class="no">FROM</span> <span class="sb">`articles`</span> <span class="no">WHERE</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">`</span><span class="nb">id</span><span class="sb">` = 6616 LIMIT 1</span>
+</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
+</span><span class='line'><span class="sb">&gt;&gt; Article.find(6616).title</span>
+</span><span class='line'><span class="sb">  Article Load (0.4ms)  SELECT `</span><span class="n">articles</span><span class="sb">`.* FROM `</span><span class="n">articles</span><span class="sb">` WHERE `</span><span class="n">articles</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = 6616 LIMIT 1</span>
+</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>I picked an article number and did a query of its title and see that it was a 0.5 and 0.4ms call on the database. The database I am working with locally is quite small and the query isn&#8217;t very complex. Regardless, with caching we can remove database calls from the equation. Caching works like a hash with a key and a value. The syntax is <code>Rails.cache.write('key', value)</code> and then <code>Rails.cache.read('key')</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;&gt;</span> <span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;ArticleTitle&#39;</span><span class="p">,</span><span class="no">Article</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">6616</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+</span><span class='line'>  <span class="no">Article</span> <span class="no">Load</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">4</span><span class="n">ms</span><span class="p">)</span>  <span class="no">SELECT</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">*</span> <span class="no">FROM</span> <span class="sb">`articles`</span> <span class="no">WHERE</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">`</span><span class="nb">id</span><span class="sb">` = 6616 LIMIT 1</span>
+</span><span class='line'><span class="sb">true</span>
+</span><span class='line'><span class="sb">&gt;&gt; Rails.cache.read(&#39;ArticleTitle&#39;)</span>
+</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>With the read action there is no database call. Caching also supports expiring the cache, versioning it, giving it a time to live and so on. More infomation can be found in <a href="http://guides.rubyonrails.org/caching_with_rails.html">the Rails guides</a>.</p>
+
+<p>Aside from reading and writing, you can also perform a fetch which will read the result that is stored in the cache and if there is nothing there it will create the cache by performing the passed in block.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;&gt;</span> <span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;ArticleTitle&#39;</span><span class="p">)</span> <span class="p">{</span><span class="no">Article</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">6616</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">}</span>
+</span><span class='line'>  <span class="no">Article</span> <span class="no">Load</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">4</span><span class="n">ms</span><span class="p">)</span>  <span class="no">SELECT</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">*</span> <span class="no">FROM</span> <span class="sb">`articles`</span> <span class="no">WHERE</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">`</span><span class="nb">id</span><span class="sb">` = 6616 LIMIT 1</span>
+</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
+</span><span class='line'><span class="sb">&gt;&gt; Rails.cache.fetch(&#39;ArticleTitle&#39;) {Article.find(6616).title}</span>
+</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
+</span><span class='line'><span class="sb">&gt;&gt; Rails.cache.fetch(&#39;ArticleTitle&#39;) {Article.find(6616).title}</span>
+</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
+</span><span class='line'><span class="sb">&gt;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We see that the first time we attempted to fetch the <code>ArticleTitle</code> it didn&#8217;t exist so it made a database query but on each subsequent fetch there was no database call.</p>
+
+<p>The use case that occurred recently was that our site at work has become a target for hackers. We&#8217;re using the fantastic <a href="https://github.com/kickstarter/rack-attack]%20from%20Kickstarter%20to%20block%20ip%20addresses.%20We%20subscribe%20to%20a%20central%20list%20of%20IP%20addresses%20to%20block%20(numbering%20in%20the%20thousands">rack attack gem</a> that I created a cron job to poll daily and update the list by removing ip addresses that are no longer on the list and adding any new ones to the list. I created a <code>Blacklist</code> table in the database with the following cache actions:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Blacklist</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">attr_accessible</span> <span class="ss">:ip_address</span>
+</span><span class='line'>  <span class="n">after_commit</span> <span class="ss">:clear_blacklisted_ips</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">blacklisted_ips</span>
+</span><span class='line'>    <span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="o">[</span><span class="nb">self</span><span class="p">,</span> <span class="s2">&quot;blacklist&quot;</span><span class="o">]</span><span class="p">)</span> <span class="p">{</span> <span class="no">Blacklist</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">collect</span> <span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span><span class="o">.</span><span class="n">ip_address</span><span class="p">}}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">clear_blacklisted_ips</span>
+</span><span class='line'>    <span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">[</span><span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;blacklist&quot;</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So I am creating a <code>blacklisted_ips</code> that doesn&#8217;t expire unless the <code>after_commit</code> gets called by the blacklist table being changed. If the table is changed, I delete the cache so the most recent list of ips is in the cache. For reference, here is my rack attack initializer <code>rack_attack.rb</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rack</span><span class="o">::</span><span class="no">Attack</span><span class="o">.</span><span class="n">blacklist</span><span class="p">(</span><span class="s1">&#39;block dinks&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">req</span><span class="o">|</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">Blacklist</span><span class="o">.</span><span class="n">blacklisted_ips</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">ip</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I know, pretty basic eh?</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sean Marcia</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-23T20:19:00-04:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Poignantcode.com/blog/2014/03/23/model-objects-caching/" data-via="seanmarcia" data-counturl="http://Poignantcode.com/blog/2014/03/23/model-objects-caching/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/01/06/intro-to-devops/" title="Previous Post: Intro to DevOps">&laquo; Intro to DevOps</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/21/refactoring/" title="Next Post: Refactoring">Refactoring &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section class="about">
+  <h1>About the author</h1>
+  <p>
+    <img src="/images/me.png"/>
+    I am a web developer who works at <a href="http://www.gmu.edu" target="_blank">GMU</a> - a university in Fairfax, Virginia.
+  </p>
+  <p>I love anything Web related, new technologies, all things nerdy, coffee roasting, homebrewing and things dealing with statistics and data.</p>
+  <p>I also co-founded and help run the best meetup group around, <a href="http://www.arlingtonruby.org" target="_blank">Arlington Ruby</a>!</p>
+  <ul id='social-links'>
+    <li class="atom"><a href="http://poignantcode.com/atom.xml" target="_blank" title="Subscribe to RSS"></a></li>
+    <li class="github"><a href="http://github.com/seanmarcia" target="_blank" title="Github account"></a></li>
+    <li class="twitter"><a href="http://twitter.com/#!/seanmarcia" target="_blank" title="Twitter stream"></a></li>
+    <li class="linkedin"><a href="http://goo.gl/jYmTN" target="_blank" title="LinkedIn profile"></a></li>
+  </ul>
+    
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/21/refactoring/">Refactoring</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/23/model-objects-caching/">Model Objects Caching</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/06/intro-to-devops/">Intro to DevOps</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/28/my-irssi-setup/">My Irssi Setup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/14/controller-clean-up/">Controller Clean-up</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/SeanMarcia">@SeanMarcia</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'SeanMarcia',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+<a class="twitter-timeline" href="https://twitter.com/seanmarcia" data-widget-id="356478747186176002">Tweets by @seanmarcia</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Sean Marcia -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress,</a> themed by <a href="mailto:teresa@poignantcode.com">Teresa Finn</a><a href</span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
