@@ -3,12 +3,17 @@
   
   
   <url>
+<<<<<<< HEAD
     <loc>http://poignantcode.com/blog/2014/07/21/refactoring/</loc>
+=======
+    <loc>http://SeanMarcia.github.io/blog/2014/07/21/refactoring/</loc>
+>>>>>>> 6515e152b7c4bd75784ada3ab6b3f77da912f2d1
     <lastmod>2014-07-21T00:12:00-04:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   
+<<<<<<< HEAD
   <url>
     <loc>http://poignantcode.com/blog/archives/</loc>
     <lastmod>2014-07-24T15:56:03-04:00</lastmod>
@@ -131,5 +136,7 @@
     <lastmod>2014-07-24T12:12:1406218364Z</lastmod>
     <priority>0.6</priority>
   </url>
+=======
+>>>>>>> 6515e152b7c4bd75784ada3ab6b3f77da912f2d1
   
 </urlset>
