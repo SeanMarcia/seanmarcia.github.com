@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Poignant Code</title>
+  <title>Controller Clean-up - Poignant Code</title>
   <meta name="author" content="Sean Marcia">
 
   
-  <meta name="description" content="(note: this blog post is work in progress, I figure since it was getting excessively long I figured I post what I have.) &#8220;Broken gets fixed but &hellip;">
+  <meta name="description" content="We all have those files that work but are ugly and we don&#8217;t want to refactor. Or as the quote goes Broken code gets fixed but bad code sticks &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://Poignantcode.com/">
+  <link rel="canonical" href="http://Poignantcode.com/blog/2013/08/14/controller-clean-up/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -71,329 +71,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/07/21/refactoring/">Refactoring</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-07-21T00:12:00-04:00" pubdate data-updated="true">Jul 21<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>(note: this blog post is work in progress, I figure since it was getting excessively long I figured I post what I have.)</p>
-
-<h3>&#8220;Broken gets fixed but crap lasts forever.&#8221;</h3>
-
-<p>We had a request a couple years ago for an automated link checker for all the sites in our system so our users would know when content they are linking to was no longer available. While tasks like this are important everywhere, in the academic setting, where I work, this is extremely important as our researchers and professors academic rankings depends on accurate and reviewable information.</p>
-
-<p>I quickly hacked out a horrible solution that worked, put it into a cron job and then promised myself I&#8217;d come back and refactor when I had more time.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/21/refactoring/">&#127356;&#127358;&#127361;&#127348; &#9758;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/23/model-objects-caching/">Model Objects Caching</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-23T20:19:00-04:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>At a recent <a href="arlingtonruby.org">meetup</a> I was explaining the benefits of caching model objects and how it can help performance by reducing calls to your database. I was only able to give contrived examples at the time but I thought that since I recently had a use case that fell into this neighborhood I thought I&#8217;d share. I&#8217;ll note that Rails will, by default, write to the file system but for optimal performance you&#8217;ll want to use a memory based store like <a href="http://memcached.org/">memcached</a> or <a href="http://redis.io/">redis</a>.</p>
-
-<p>If you open up a Rails console and access information from your database you can see the time it spends looking up that information. For example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;&gt;</span> <span class="no">Article</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">6616</span><span class="p">)</span><span class="o">.</span><span class="n">title</span>
-</span><span class='line'>  <span class="no">Article</span> <span class="no">Load</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="n">ms</span><span class="p">)</span>  <span class="no">SELECT</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">*</span> <span class="no">FROM</span> <span class="sb">`articles`</span> <span class="no">WHERE</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">`</span><span class="nb">id</span><span class="sb">` = 6616 LIMIT 1</span>
-</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
-</span><span class='line'><span class="sb">&gt;&gt; Article.find(6616).title</span>
-</span><span class='line'><span class="sb">  Article Load (0.4ms)  SELECT `</span><span class="n">articles</span><span class="sb">`.* FROM `</span><span class="n">articles</span><span class="sb">` WHERE `</span><span class="n">articles</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = 6616 LIMIT 1</span>
-</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>I picked an article number and did a query of its title and see that it was a 0.5 and 0.4ms call on the database. The database I am working with locally is quite small and the query isn&#8217;t very complex. Regardless, with caching we can remove database calls from the equation. Caching works like a hash with a key and a value. The syntax is <code>Rails.cache.write('key', value)</code> and then <code>Rails.cache.read('key')</code>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;&gt;</span> <span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;ArticleTitle&#39;</span><span class="p">,</span><span class="no">Article</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">6616</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
-</span><span class='line'>  <span class="no">Article</span> <span class="no">Load</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">4</span><span class="n">ms</span><span class="p">)</span>  <span class="no">SELECT</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">*</span> <span class="no">FROM</span> <span class="sb">`articles`</span> <span class="no">WHERE</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">`</span><span class="nb">id</span><span class="sb">` = 6616 LIMIT 1</span>
-</span><span class='line'><span class="sb">true</span>
-</span><span class='line'><span class="sb">&gt;&gt; Rails.cache.read(&#39;ArticleTitle&#39;)</span>
-</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>With the read action there is no database call. Caching also supports expiring the cache, versioning it, giving it a time to live and so on. More infomation can be found in <a href="http://guides.rubyonrails.org/caching_with_rails.html">the Rails guides</a>.</p>
-
-<p>Aside from reading and writing, you can also perform a fetch which will read the result that is stored in the cache and if there is nothing there it will create the cache by performing the passed in block.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;&gt;</span> <span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;ArticleTitle&#39;</span><span class="p">)</span> <span class="p">{</span><span class="no">Article</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">6616</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">}</span>
-</span><span class='line'>  <span class="no">Article</span> <span class="no">Load</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">4</span><span class="n">ms</span><span class="p">)</span>  <span class="no">SELECT</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">*</span> <span class="no">FROM</span> <span class="sb">`articles`</span> <span class="no">WHERE</span> <span class="sb">`articles`</span><span class="o">.</span><span class="n">`</span><span class="nb">id</span><span class="sb">` = 6616 LIMIT 1</span>
-</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
-</span><span class='line'><span class="sb">&gt;&gt; Rails.cache.fetch(&#39;ArticleTitle&#39;) {Article.find(6616).title}</span>
-</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
-</span><span class='line'><span class="sb">&gt;&gt; Rails.cache.fetch(&#39;ArticleTitle&#39;) {Article.find(6616).title}</span>
-</span><span class='line'><span class="sb">&quot;The ‘Wow’ Factor: Mason Econ Major Interns at White House&quot;</span>
-</span><span class='line'><span class="sb">&gt;&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We see that the first time we attempted to fetch the <code>ArticleTitle</code> it didn&#8217;t exist so it made a database query but on each subsequent fetch there was no database call.</p>
-
-<p>The use case that occurred recently was that our site at work has become a target for hackers. We&#8217;re using the fantastic <a href="https://github.com/kickstarter/rack-attack]%20from%20Kickstarter%20to%20block%20ip%20addresses.%20We%20subscribe%20to%20a%20central%20list%20of%20IP%20addresses%20to%20block%20(numbering%20in%20the%20thousands">rack attack gem</a> that I created a cron job to poll daily and update the list by removing ip addresses that are no longer on the list and adding any new ones to the list. I created a <code>Blacklist</code> table in the database with the following cache actions:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Blacklist</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-</span><span class='line'>  <span class="n">attr_accessible</span> <span class="ss">:ip_address</span>
-</span><span class='line'>  <span class="n">after_commit</span> <span class="ss">:clear_blacklisted_ips</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">blacklisted_ips</span>
-</span><span class='line'>    <span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="o">[</span><span class="nb">self</span><span class="p">,</span> <span class="s2">&quot;blacklist&quot;</span><span class="o">]</span><span class="p">)</span> <span class="p">{</span> <span class="no">Blacklist</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">collect</span> <span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span><span class="o">.</span><span class="n">ip_address</span><span class="p">}}</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">clear_blacklisted_ips</span>
-</span><span class='line'>    <span class="no">Rails</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">[</span><span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;blacklist&quot;</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So I am creating a <code>blacklisted_ips</code> that doesn&#8217;t expire unless the <code>after_commit</code> gets called by the blacklist table being changed. If the table is changed, I delete the cache so the most recent list of ips is in the cache. For reference, here is my rack attack initializer <code>rack_attack.rb</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rack</span><span class="o">::</span><span class="no">Attack</span><span class="o">.</span><span class="n">blacklist</span><span class="p">(</span><span class="s1">&#39;block dinks&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">req</span><span class="o">|</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="no">Blacklist</span><span class="o">.</span><span class="n">blacklisted_ips</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">ip</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I know, pretty basic eh?</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/06/intro-to-devops/">Intro to DevOps</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-01-06T11:26:00-05:00" pubdate data-updated="true">Jan 6<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>Update</strong>:
-I gave this talk at the <a href="http://www.meetup.com/dcruby/events/101392262/">DC Ruby Users Group</a> and was asked which of the following solutions I chose and why. I chose Chef for provisioning and configuring servers mostly because I have friends in the Chef community but if I were to choose again, I would likely use Ansible as Chef is more power than I need since we only have three servers. I chose Capistrano for deployment because I&#8217;ve used it in the past and found it dead simple to use. For Continuous Integration I went with cruisecontrol.rb mostly because it is written in ruby and easy to <a href="http://poignantcode.com/blog/2012/10/24/ci-servers-for-fun-and-profit/">configure</a>. I use Airbrake for errors (but am looking into honeybadger) and monitoring with New Relic. I don&#8217;t aggregate my logs or monitor my servers other than what New Relic and Airbrake give mostly because it didn&#8217;t make sense with the small architecture we have. <strong>End Update</strong></p>
-
-<h3></h3>
-
-<p>We used manage hosting at work and when we recently scaled out our architecture we found that at our host, despite us having a single application, increased the prices proportionally with the number of servers. We understand that each additional server costs an additional fee but there was no break on support costs. We know that they, like a lot of companies, use AWS for infrastructure and so we are able to price out what our instances cost and saw that we were paying a premium of approximately $150 a month for the insurance of being able to call someone up in case of trouble or if we are having any issues. The problem and what we couldn&#8217;t justify the extra expense for was that the premium is levied on each server so having 2 application servers rather than one which would not double the number of support calls or use of their services would still double our support costs. While we have avoided having a DevOps team ourselves it finally made sense to learn the tools. I was surprising how easy and &#8220;rubylike&#8221; many of them were. I decided to share what I learned because we have recently had members of the meet-up group I help organize asking what exactly DevOps is.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/01/06/intro-to-devops/">&#127356;&#127358;&#127361;&#127348; &#9758;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/28/my-irssi-setup/">My Irssi Setup</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-28T23:00:00-04:00" pubdate data-updated="true">Aug 28<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&#8217;m always surprised by my vim and emacs friends when they tell me they use an irc client like <a href="http://www.codeux.com/textual/">textual</a>. Don&#8217;t get me wrong, it is an amazing client but if you are a command line advocate I think you need to check out <a href="http://www.irssi.org/">Irssi</a>.</p>
-
-<p>Irssi&#8217;s big win for me is that you can use a terminal multiplexer like <a href="http://www.gnu.org/software/screen/">Screen</a> or <a href="http://tmux.sourceforge.net/">tmux</a> and set your session up on a server and then you can just ssh into your server and reattach your session. So you never have to miss out on any conversations or cat pictures.</p>
-
-<p>Much like vim or emacs the great thing about <code>irssi</code> is how customizable it is. On the official irssi site there is a list of <a href="http://scripts.irssi.org/">scripts/plugins</a> you can install to make it your own. A quick Github search will also yield a lot of people&#8217;s plugins that they have created that you can further experiment with. Or, like any other piece of open source software, you can always create your own.</p>
-
-<p>Here are the scripts I routinely use:</p>
-
-<ul>
-<li><code>adv_windowlist.pl</code> - This allows you to customize your irssi window, much like the vim powerline plugin. I customize my irssi with the following:
-
-<ul>
-<li><code>/set awl_display_key $Q%K|%n$H$C$S</code> - This makes each of the irc windows look more ircish by adding an octothorpe before each channel name.</li>
-<li><code>/set awl_display_key_active $Q%K|%n$H%U$C$S%n</code> - This makes the active window underlined so I know who I&#8217;m talking to.</li>
-</ul>
-</li>
-<li><code>nickcolor.pl</code> - This colourizes the names of everyone in the channel. It makes it easier to separate out who is saying what.</li>
-<li><code>nicklist.pl</code> - Adds a display of who is in the channel. You activate it with:
-
-<ul>
-<li><code>/NICKLIST SCREEN</code> - This assumes you are using screen rather than tmux.</li>
-</ul>
-</li>
-<li><code>usercount.pl</code> - Adds a count of how many people are in the channel into the powerline. You activate it with:
-
-<ul>
-<li><code>/statusbar window add usercount</code></li>
-</ul>
-</li>
-</ul>
-
-
-<p>All scripts should be put in the <code>~/.irssi/scripts/autorun</code> if you want them auto loaded when you open irssi or in <code>~/.irssi/scripts</code> if you want to manually load them. To manually load a script you just type: <code>/script load nickcolor.pl</code></p>
-
-<p>I also take advantage of a lot of irssi&#8217;s built in functionality like hilight, log, ignore and so forth. The <a href="http://quadpoint.org/articles/irssi/">irssi manual</a> gives a lot of information on customizing irssi.</p>
-
-<p>When you are finished you are left with something like this:</p>
-
-<p><img src="/images/terminal.png" title="irssi" alt="irssi"></p>
-
-<p>All the scripts I mention here are available in my <a href="https://github.com/SeanMarcia/irssi">irssi github repo</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/14/controller-clean-up/">Controller Clean-up</a></h1>
+      <h1 class="entry-title">Controller Clean-up</h1>
     
     
       <p class="meta">
@@ -416,7 +99,7 @@ I gave this talk at the <a href="http://www.meetup.com/dcruby/events/101392262/"
   </header>
 
 
-  <div class="entry-content"><p>We all have those files that work but are ugly and we don&#8217;t want to refactor. Or as the quote goes <code>Broken code gets fixed but bad code sticks around forever.</code></p>
+<div class="entry-content"><p>We all have those files that work but are ugly and we don&#8217;t want to refactor. Or as the quote goes <code>Broken code gets fixed but bad code sticks around forever.</code></p>
 
 <p>I had an ugly controller that worked so I was content to leave it and focus on other things. However, when I was going through the codebase and updating all the old <code>find</code> syntax to the newer <code>where</code> syntax and I realized I couldn&#8217;t avoid this controller anymore.</p>
 
@@ -872,58 +555,16 @@ Ideally, in the view it would be nice to have something like:</p>
 
 <p>Aside from cleaning up our code, this gives us the added benefit of making our code much cleaner and easier to read as well removing the number of instance variables floating around. Plus, and probably most important of all, it makes our code easier to test.</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/28/why-i-dont-like-send/">Why I Don&#8217;t Like Send</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">Sean Marcia</span></span>
 
-<time datetime="2013-07-28T19:56:00-04:00" pubdate data-updated="true">Jul 28<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&#8217;m rethinking this after some discussion. Especially since Sandi Metz in <a href="http://www.amazon.com/Practical-Object-Oriented-Design-Ruby-Addison-Wesley/dp/0321721330">POODR</a> says that object oriented code is all about objects <code>sending</code> messages to one another.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/16/vps-set-up/">VPS Set Up</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -935,311 +576,34 @@ Ideally, in the view it would be nice to have something like:</p>
   
 
 
-<time datetime="2013-07-16T15:59:00-04:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I recently built a rails app that needed more than the free level provided at Heroku so I decided to provision my own VPS and I thought I&#8217;d give the steps I followed to help someone else doing the same thing.</p>
-
-<h3>I&#8217;m making the following assumptions:</h3>
-
-<ul>
-<li>You have a github account and know how to <a href="https://help.github.com/articles/generating-ssh-keys">generate SSH keys</a>.</li>
-<li>You can work with a command line editor like vim/emacs/pico</li>
-<li>Your using a debian based linux distro on your VPS, I&#8217;m using Ubuntu 12.04 LTS</li>
-</ul>
-
-
-<p>If you don&#8217;t have a VPS, most people recommend <a href="https://www.linode.com/">Linode</a> since it beats both <a href="http://aws.amazon.com/ec2/">EC2</a> and <a href="https://www.digitalocean.com/">Digital Ocean</a> when <a href="http://www.cosninix.com/wp/2013/06/amazon-aws-ec2-linode-digitalocean-cloudserver-showdown/">compared head-to-head</a> but since I was being thrifty and I didn&#8217;t need that level of performance, I went with Digital Ocean&#8217;s cheapest plan.</p>
-
-<p>Assuming you have your server provisioned, you need to ssh into it, add a user (you don&#8217;t need to create a user with the name Sean, but you can) and give the user sudo access.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/07/16/vps-set-up/">&#127356;&#127358;&#127361;&#127348; &#9758;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
+<time datetime="2013-08-14T14:06:00-04:00" pubdate data-updated="true">Aug 14<span>th</span>, 2013</time>
       
-  <header>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2013/06/15/fibonacci/">Fibonacci</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
+      <div class="sharing">
   
-
-
-<time datetime="2013-06-15T13:49:00-04:00" pubdate data-updated="true">Jun 15<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I was looking into something related to the Fibonacci sequence and the guy sitting beside me at <a href="http://www.rubynation.org/">RubyNation</a> was also looking into the fibonacci sequence for another completely unrelated reason. We talked briefly and then set about solving the sequence with a variety of different methods.</p>
-
-<p>The first was recursion:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span>
-</span><span class='line'>  <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We all know that using recursion can get pretty ugly especially with extremely large numbers. Too much stuff on your stack and bang a stack overflow.
-The second was arrays:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span>
-</span><span class='line'>  <span class="n">f</span> <span class="o">=</span> <span class="o">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">f</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">+</span> <span class="n">f</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
-</span><span class='line'>    <span class="n">f</span><span class="o">.</span><span class="n">shift</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">first</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This was my favourite solution and seemed the easiest while still being readable:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span>
-</span><span class='line'>  <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="o">+</span><span class="n">b</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">a</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is a solution using hashes which while cool, is difficult to read which seems unrubylike to me:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">fib</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
-</span><span class='line'><span class="n">fib</span><span class="o">.</span><span class="n">default_proc</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span> <span class="o">|</span><span class="n">h</span><span class="p">,</span><span class="n">k</span><span class="o">|</span> <span class="n">h</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="n">h</span><span class="o">[</span><span class="n">k</span><span class="o">-</span><span class="mi">2</span><span class="o">]</span> <span class="o">+</span> <span class="n">h</span><span class="o">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I think for an upcoming <a href="http://www.meetup.com/Arlington-Ruby">ArlingtonRuby</a> hack night I am going to use the Fibonacci sequence as a problem to hack on.</p>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Poignantcode.com/blog/2013/08/14/controller-clean-up/" data-via="seanmarcia" data-counturl="http://Poignantcode.com/blog/2013/08/14/controller-clean-up/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
-
-    </article>
-  
-  
-    <article>
+    
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/01/minitest/">Minitest</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-01T11:35:00-05:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Everyone seems to have a hate on for Rspec recently and a love on for Minitest so I decided to give it a try but it took me forever to get started because I couldn&#8217;t find a good reference of necessary matchers and expectations so I decided to list them here for easy access.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_be</span><span class="p">(</span><span class="n">operator</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span> <span class="o">-</span> <span class="k">for</span> <span class="n">example</span><span class="p">,</span> <span class="mi">10</span><span class="o">.</span><span class="n">must_be</span> <span class="ss">:&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">,</span> <span class="mi">11</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_be_close_to</span> <span class="o">-</span> <span class="n">the</span> <span class="n">equivalent</span> <span class="n">of</span> <span class="n">assert_in_delta</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_be_empty</span> <span class="o">-</span> <span class="no">Fails</span> <span class="k">unless</span> <span class="n">obj</span><span class="o">.</span><span class="n">empty?</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_be_instance_of</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span> <span class="o">-</span> <span class="no">Fails</span> <span class="k">unless</span> <span class="n">obj</span><span class="o">.</span><span class="n">class</span> <span class="o">==</span> <span class="n">klass</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_be_kind_of</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span> <span class="o">-</span> <span class="no">Fails</span> <span class="k">unless</span> <span class="n">obj</span> <span class="n">is</span> <span class="n">of</span> <span class="k">class</span> <span class="n">klass</span> <span class="ow">or</span> <span class="n">klass</span> <span class="n">is</span> <span class="n">one</span> <span class="n">of</span> <span class="n">its</span> <span class="n">superclasses</span><span class="o">.</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_be_nil</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_be_same_as</span> <span class="o">-</span> <span class="n">tests</span> <span class="k">for</span> <span class="kp">true</span> <span class="n">object</span> <span class="n">equality</span>
-</span><span class='line'><span class="nb">lambda</span> <span class="p">{}</span><span class="o">.</span><span class="n">must_be_silent</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_be_within_delta</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_be_within_epsilon</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_equal</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">-</span> <span class="no">Does</span> <span class="n">a</span> <span class="o">==</span><span class="sr">/eql? comparison between two objects.</span>
-</span><span class='line'><span class="sr">obj.must_include(other)</span>
-</span><span class='line'><span class="sr">obj.must_match(regex) - A regular expression match, e.g. &quot;hello&quot;.must_match /</span><span class="n">w</span><span class="o">+/</span>
-</span><span class='line'><span class="nb">lambda</span> <span class="p">{}</span><span class="o">.</span><span class="n">must_output</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="o">[</span><span class="n">stderr</span><span class="o">.</span><span class="n">.</span><span class="o">]</span><span class="p">)</span> <span class="o">-</span> <span class="no">The</span> <span class="n">block</span> <span class="n">should</span> <span class="n">have</span> <span class="n">certain</span> <span class="n">output</span> <span class="n">on</span> <span class="n">stdout</span> <span class="ow">or</span> <span class="n">stderr</span><span class="o">.</span> <span class="no">Set</span> <span class="n">stdout</span> <span class="n">to</span> <span class="kp">nil</span> <span class="n">just</span> <span class="n">to</span> <span class="n">check</span> <span class="n">stderr</span><span class="o">.</span>
-</span><span class='line'><span class="nb">lambda</span> <span class="p">{}</span><span class="o">.</span><span class="n">must_raise</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_respond_to</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-</span><span class='line'><span class="n">obj</span><span class="o">.</span><span class="n">must_throw</span><span class="p">(</span><span class="n">sym</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are also, like rspec, negative matchers and expectations. They are:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">wont_be</span>
-</span><span class='line'><span class="n">wont_be_empty</span>
-</span><span class='line'><span class="n">wont_be_instance_of</span>
-</span><span class='line'><span class="n">wont_be_kind_of</span>
-</span><span class='line'><span class="n">wont_be_nil</span>
-</span><span class='line'><span class="n">wont_be_same_as</span>
-</span><span class='line'><span class="n">wont_equal</span>
-</span><span class='line'><span class="n">wont_include</span>
-</span><span class='line'><span class="n">wont_match</span>
-</span><span class='line'><span class="n">wont_respond_to</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Hope this helps with my TDD. That&#8217;s TEST driven development, not Troll driven&#8230;</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
+        <a class="basic-alignment left" href="/blog/2013/07/28/why-i-dont-like-send/" title="Previous Post: Why I Don't Like Send">&laquo; Why I Don't Like Send</a>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/01/22/ruby-koans-part-2/">Ruby Koans Part 2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-22T18:32:00-05:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Here is that last piece of code in a much more Rubylike manner.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">triangle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">raise</span> <span class="no">TriangleError</span> <span class="k">unless</span> <span class="no">TriangleSideLengthsAreValid</span><span class="p">?(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">return</span> <span class="ss">:equilateral</span> <span class="k">if</span> <span class="o">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">].</span><span class="n">uniq</span><span class="o">.</span><span class="n">length</span><span class="o">==</span><span class="mi">1</span>
-</span><span class='line'>  <span class="k">return</span> <span class="ss">:isosceles</span> <span class="k">if</span> <span class="o">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">].</span><span class="n">uniq</span><span class="o">.</span><span class="n">length</span><span class="o">==</span><span class="mi">2</span>
-</span><span class='line'>  <span class="k">return</span> <span class="ss">:scalene</span> <span class="k">if</span> <span class="o">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">].</span><span class="n">uniq</span><span class="o">.</span><span class="n">length</span><span class="o">==</span><span class="mi">3</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">TriangleSideLengthsAreValid?</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">ax</span><span class="p">,</span><span class="n">bx</span><span class="p">,</span><span class="n">cx</span><span class="o">=[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">].</span><span class="n">sort</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">ax</span><span class="o">+</span><span class="n">bx</span><span class="p">)</span><span class="o">&gt;</span><span class="n">cx</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+      
+        <a class="basic-alignment right" href="/blog/2013/08/28/my-irssi-setup/" title="Next Post: My Irssi Setup">My Irssi Setup &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
 
 </div>
-  
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section class="about">
@@ -1287,7 +651,7 @@ The second was arrays:</p>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/SeanMarcia">@SeanMarcia</a> on GitHub
@@ -1322,6 +686,7 @@ The second was arrays:</p>
 
   
 </aside>
+
 
     </div>
   </div>
