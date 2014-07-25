@@ -4,7 +4,7 @@
   <title><![CDATA[Poignant Code]]></title>
   <link href="http://SeanMarcia.github.io/atom.xml" rel="self"/>
   <link href="http://SeanMarcia.github.io/"/>
-  <updated>2014-07-24T22:38:15-04:00</updated>
+  <updated>2014-07-25T10:20:06-04:00</updated>
   <id>http://SeanMarcia.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -155,11 +155,12 @@
 </span><span class="line">      <span class="k">end</span>
 </span><span class="line">    <span class="k">end</span>
 </span><span class="line">  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>I started by creating a scope in resources that checks for a <code>page_id</code> and a <code>url</code>. I also created some aliases for <code>url_link</code> and <code>main_content</code> to in my <code>Article</code> model in order to have parity with the <code>Event</code> and <code>Resource</code> model in order to get some uniformity.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line"><span class="vi">@events</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">unlinked_events</span>
+</span><span class="line"><span class="sb">`</span>
+</span><span class="line">
+</span><span class="line"><span class="sb">I started by creating a scope in resources that checks for a `</span><span class="n">page_id</span><span class="sb">` and a `</span><span class="n">url</span><span class="sb">`. I also created some aliases for `</span><span class="n">url_link</span><span class="sb">` and `</span><span class="n">main_content</span><span class="sb">` to in my `</span><span class="no">Article</span><span class="sb">` model in order to have parity with the `</span><span class="no">Event</span><span class="sb">` and `</span><span class="no">Resource</span><span class="sb">` model in order to get some uniformity.</span>
+</span><span class="line">
+</span><span class="line"><span class="sb">`</span>
+</span><span class="line"><span class="vi">@events</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">unlinked_events</span>
 </span><span class="line"><span class="vi">@event_links</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">linked_events</span>
 </span><span class="line"><span class="vi">@articles</span> <span class="o">=</span> <span class="no">Article</span><span class="o">.</span><span class="n">unlinked_articles</span>
 </span><span class="line"><span class="vi">@article_links</span> <span class="o">=</span> <span class="no">Article</span><span class="o">.</span><span class="n">linked_articles</span>
