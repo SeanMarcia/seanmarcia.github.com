@@ -4,7 +4,7 @@
   <title><![CDATA[Poignant Code]]></title>
   <link href="http://SeanMarcia.github.io/atom.xml" rel="self"/>
   <link href="http://SeanMarcia.github.io/"/>
-  <updated>2014-07-25T19:11:25-04:00</updated>
+  <updated>2014-08-07T14:19:13-04:00</updated>
   <id>http://SeanMarcia.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,6 +12,24 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[New Theme/Missing Posts]]></title>
+    <link href="http://SeanMarcia.github.io/blog/2014/08/07/new-theme-slash-missing-posts/"/>
+    <updated>2014-08-07T14:11:35-04:00</updated>
+    <id>http://SeanMarcia.github.io/blog/2014/08/07/new-theme-slash-missing-posts</id>
+    <content type="html"><![CDATA[<p>So implementing a new octopress theme seems have nuked all the links to my previous posts as well as the index on the main site. The posts are still there and the stylings are messed up so I’m going to see about fixing them all after I move. In the meantime, here are the most visited posts if you were looking for information:</p>
+
+<ul>
+  <li><a href="http://poignantcode.com/blog/2013/07/16/vps-set-up/">VPS Setup</a></li>
+  <li><a href="http://poignantcode.com/blog/2013/08/28/my-irssi-setup/">My Irssi Setup</a></li>
+  <li><a href="http://poignantcode.com/blog/2014/01/06/intro-to-devops/">Intro to Devops</a></li>
+  <li><a href="http://poignantcode.com/blog/2014/03/23/model-objects-caching/">Model Object Caching</a></li>
+</ul>
+
+<p>The information is all there but it is currently pretty ugly. Hopefully I’ll have it fixed soon.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Refactoring towards Celluloid]]></title>
@@ -32,396 +50,403 @@
 
 <p>So here’s the (ugly) code:</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="code"><pre><code class=""><span class="line">@emaillist = {}
-</span><span class="line">@events = Event.all
-</span><span class="line">@articles = Article.all
-</span><span class="line">@resources = Resource.all
-</span><span class="line">@logfile = File.open("bad_link_log.txt","w")
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line"><span class="vi">@emaillist</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class="line"><span class="vi">@events</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">all</span>
+</span><span class="line"><span class="vi">@articles</span> <span class="o">=</span> <span class="no">Article</span><span class="o">.</span><span class="n">all</span>
+</span><span class="line"><span class="vi">@resources</span> <span class="o">=</span> <span class="no">Resource</span><span class="o">.</span><span class="n">all</span>
+</span><span class="line"><span class="vi">@logfile</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;bad_link_log.txt&quot;</span><span class="p">,</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
 </span><span class="line">
-</span><span class="line">def organize_url(url, originating_site_domain)
-</span><span class="line">  url.insert(0, originating_site_domain) if url.match(/^\//)
-</span><span class="line">  url.insert(0, "http://") unless ((url.match(/^http\:\/\//)) or (url.match(/^https\:\/\//)))
-</span><span class="line">  url = URI.encode(url) if (url =~ URI::DEFAULT_PARSER.regexp[:ABS_URI]).nil?
-</span><span class="line">  return url
-</span><span class="line">end
+</span><span class="line"><span class="k">def</span> <span class="nf">organize_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">originating_site_domain</span><span class="p">)</span>
+</span><span class="line">  <span class="n">url</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">originating_site_domain</span><span class="p">)</span> <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^\//</span><span class="p">)</span>
+</span><span class="line">  <span class="n">url</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;http://&quot;</span><span class="p">)</span> <span class="k">unless</span> <span class="p">((</span><span class="n">url</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^http\:\/\//</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^https\:\/\//</span><span class="p">)))</span>
+</span><span class="line">  <span class="n">url</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">url</span> <span class="o">=~</span> <span class="no">URI</span><span class="o">::</span><span class="no">DEFAULT_PARSER</span><span class="o">.</span><span class="n">regexp</span><span class="o">[</span><span class="ss">:ABS_URI</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span>
+</span><span class="line">  <span class="k">return</span> <span class="n">url</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">def notify_site(problem_type, page_id, domain, email, url, page_type)
-</span><span class="line">  email ||= "No Admin &lt;chssweb@gmu.edu&gt;"
-</span><span class="line">  if @emaillist.has_key?(email)
-</span><span class="line">    @emaillist[email] += ["On #{domain}/#{page_type}/#{page_id} the link #{url} is returning a #{problem_type}."]
-</span><span class="line">  else
-</span><span class="line">    @emaillist[email] = ["On #{domain}/#{page_type}/#{page_id} the link #{url} is returning a #{problem_type}."]
-</span><span class="line">  end
-</span><span class="line">  @logfile.puts("There was a #{problem_type} on #{domain}/#{page_type}/#{page_id} linking to #{url} and #{email} was notified.")
-</span><span class="line">end
+</span><span class="line"><span class="k">def</span> <span class="nf">notify_site</span><span class="p">(</span><span class="n">problem_type</span><span class="p">,</span> <span class="n">page_id</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">page_type</span><span class="p">)</span>
+</span><span class="line">  <span class="n">email</span> <span class="o">||=</span> <span class="s2">&quot;No Admin &lt;chssweb@gmu.edu&gt;&quot;</span>
+</span><span class="line">  <span class="k">if</span> <span class="vi">@emaillist</span><span class="o">.</span><span class="n">has_key?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class="line">    <span class="vi">@emaillist</span><span class="o">[</span><span class="n">email</span><span class="o">]</span> <span class="o">+=</span> <span class="o">[</span><span class="s2">&quot;On </span><span class="si">#{</span><span class="n">domain</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">page_type</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">page_id</span><span class="si">}</span><span class="s2"> the link </span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2"> is returning a </span><span class="si">#{</span><span class="n">problem_type</span><span class="si">}</span><span class="s2">.&quot;</span><span class="o">]</span>
+</span><span class="line">  <span class="k">else</span>
+</span><span class="line">    <span class="vi">@emaillist</span><span class="o">[</span><span class="n">email</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;On </span><span class="si">#{</span><span class="n">domain</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">page_type</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">page_id</span><span class="si">}</span><span class="s2"> the link </span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2"> is returning a </span><span class="si">#{</span><span class="n">problem_type</span><span class="si">}</span><span class="s2">.&quot;</span><span class="o">]</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line">  <span class="vi">@logfile</span><span class="o">.</span><span class="n">puts</span><span class="p">(</span><span class="s2">&quot;There was a </span><span class="si">#{</span><span class="n">problem_type</span><span class="si">}</span><span class="s2"> on </span><span class="si">#{</span><span class="n">domain</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">page_type</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">page_id</span><span class="si">}</span><span class="s2"> linking to </span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2"> and </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2"> was notified.&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">def find_broken_link(original_site, id, admin_email, url, page_type)
-</span><span class="line">  baseurl = organize_url(url, original_site)
-</span><span class="line">  begin
-</span><span class="line">    res = Net::HTTP.get_response(URI.parse(baseurl))
-</span><span class="line">    puts "Code: #{res.code} for #{url}"
-</span><span class="line">    notify_site("404 error", id, original_site, admin_email, url, page_type) if (res.code.to_i == 404)
-</span><span class="line">  rescue
-</span><span class="line">    puts "Broken/bad link for #{url}"
-</span><span class="line">    notify_site("broken link error", id, original_site, admin_email, url, page_type)
-</span><span class="line">  end
-</span><span class="line">end
+</span><span class="line"><span class="k">def</span> <span class="nf">find_broken_link</span><span class="p">(</span><span class="n">original_site</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">admin_email</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">page_type</span><span class="p">)</span>
+</span><span class="line">  <span class="n">baseurl</span> <span class="o">=</span> <span class="n">organize_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">original_site</span><span class="p">)</span>
+</span><span class="line">  <span class="k">begin</span>
+</span><span class="line">    <span class="n">res</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">baseurl</span><span class="p">))</span>
+</span><span class="line">    <span class="nb">puts</span> <span class="s2">&quot;Code: </span><span class="si">#{</span><span class="n">res</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2"> for </span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class="line">    <span class="n">notify_site</span><span class="p">(</span><span class="s2">&quot;404 error&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">original_site</span><span class="p">,</span> <span class="n">admin_email</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">page_type</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">to_i</span> <span class="o">==</span> <span class="mi">404</span><span class="p">)</span>
+</span><span class="line">  <span class="k">rescue</span>
+</span><span class="line">    <span class="nb">puts</span> <span class="s2">&quot;Broken/bad link for </span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class="line">    <span class="n">notify_site</span><span class="p">(</span><span class="s2">&quot;broken link error&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">original_site</span><span class="p">,</span> <span class="n">admin_email</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">page_type</span><span class="p">)</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">def release_the_dogs(admin_contact, contact_message)
-</span><span class="line">  BrokenLinkMailer.broken_link_notifier(admin_contact, contact_message).deliver
-</span><span class="line">end
+</span><span class="line"><span class="k">def</span> <span class="nf">release_the_dogs</span><span class="p">(</span><span class="n">admin_contact</span><span class="p">,</span> <span class="n">contact_message</span><span class="p">)</span>
+</span><span class="line">  <span class="no">BrokenLinkMailer</span><span class="o">.</span><span class="n">broken_link_notifier</span><span class="p">(</span><span class="n">admin_contact</span><span class="p">,</span> <span class="n">contact_message</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">@emaillist.each_key do |key|
-</span><span class="line">  release_the_dogs(key, @emaillist[key])
-</span><span class="line">end
+</span><span class="line"><span class="vi">@emaillist</span><span class="o">.</span><span class="n">each_key</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="o">|</span>
+</span><span class="line">  <span class="n">release_the_dogs</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="vi">@emaillist</span><span class="o">[</span><span class="n">key</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">@events.each do |e|
-</span><span class="line">  if e.url?
-</span><span class="line">    find_broken_link(e.originating_site.domain,e.id, e.originating_site.reporting_email,e.url,"events")
-</span><span class="line">  end
-</span><span class="line">  long_desc_links = URI.extract(e.long_description).select!{|v| v =~ /http/}
-</span><span class="line">  if !long_desc_links.blank?
-</span><span class="line">    long_desc_links.each do |link|
-</span><span class="line">      find_broken_link(e.originating_site.domain,e.id, e.originating_site.reporting_email,link,"events")
-</span><span class="line">    end
-</span><span class="line">  end
-</span><span class="line">end
+</span><span class="line"><span class="vi">@events</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">e</span><span class="o">|</span>
+</span><span class="line">  <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">url?</span>
+</span><span class="line">    <span class="n">find_broken_link</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">e</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">e</span><span class="o">.</span><span class="n">url</span><span class="p">,</span><span class="s2">&quot;events&quot;</span><span class="p">)</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line">  <span class="n">long_desc_links</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">long_description</span><span class="p">)</span><span class="o">.</span><span class="n">select!</span><span class="p">{</span><span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span> <span class="o">=~</span> <span class="sr">/http/</span><span class="p">}</span>
+</span><span class="line">  <span class="k">if</span> <span class="o">!</span><span class="n">long_desc_links</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class="line">    <span class="n">long_desc_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
+</span><span class="line">      <span class="n">find_broken_link</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">e</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">link</span><span class="p">,</span><span class="s2">&quot;events&quot;</span><span class="p">)</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">@articles.each do |a|
-</span><span class="line">  if a.url_link?
-</span><span class="line">    find_broken_link(a.originating_site.domain,a.id, a.originating_site.reporting_email,a.url_link,"articles")
-</span><span class="line">  end
-</span><span class="line">  long_desc_links = URI.extract(a.main_content).select!{|v| v =~ /http/}
-</span><span class="line">  if !long_desc_links.blank?
-</span><span class="line">    long_desc_links.each do |link|
-</span><span class="line">      find_broken_link(a.originating_site.domain,a.id, a.originating_site.reporting_email,link,"articles")
-</span><span class="line">    end
-</span><span class="line">  end
+</span><span class="line"><span class="vi">@articles</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">a</span><span class="o">|</span>
+</span><span class="line">  <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">url_link?</span>
+</span><span class="line">    <span class="n">find_broken_link</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">url_link</span><span class="p">,</span><span class="s2">&quot;articles&quot;</span><span class="p">)</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line">  <span class="n">long_desc_links</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">main_content</span><span class="p">)</span><span class="o">.</span><span class="n">select!</span><span class="p">{</span><span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span> <span class="o">=~</span> <span class="sr">/http/</span><span class="p">}</span>
+</span><span class="line">  <span class="k">if</span> <span class="o">!</span><span class="n">long_desc_links</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class="line">    <span class="n">long_desc_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
+</span><span class="line">      <span class="n">find_broken_link</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">link</span><span class="p">,</span><span class="s2">&quot;articles&quot;</span><span class="p">)</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">end
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">@resources.each do |r|
-</span><span class="line">  if r.page_id?
-</span><span class="line">    if r.url?
-</span><span class="line">      find_broken_link(r.originating_site.domain,r.id, r.originating_site.reporting_email,r.url,"resources")
-</span><span class="line">    end
-</span><span class="line">  end
-</span><span class="line">end
+</span><span class="line"><span class="vi">@resources</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
+</span><span class="line">  <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">page_id?</span>
+</span><span class="line">    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">url?</span>
+</span><span class="line">      <span class="n">find_broken_link</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="p">,</span><span class="s2">&quot;resources&quot;</span><span class="p">)</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">@emaillist.each_key do |key|
-</span><span class="line">  release_the_dogs(key, @emaillist[key])
-</span><span class="line">end
+</span><span class="line"><span class="vi">@emaillist</span><span class="o">.</span><span class="n">each_key</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="o">|</span>
+</span><span class="line">  <span class="n">release_the_dogs</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="vi">@emaillist</span><span class="o">[</span><span class="n">key</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">@logfile.close</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line"><span class="vi">@logfile</span><span class="o">.</span><span class="n">close</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Starting with the low hanging fruit:</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="code"><pre><code class=""><span class="line">  @events = Event.all
-</span><span class="line">  @articles = Article.all
-</span><span class="line">  @resources = Resource.all
-</span><span class="line">.
-</span><span class="line">.
-</span><span class="line">.
-</span><span class="line">  @events.each do |e|
-</span><span class="line">    if e.url?
-</span><span class="line">      find_broken_link(e.originating_site.domain,e.id, e.originating_site.reporting_email,e.url,"events")
-</span><span class="line">    end
-</span><span class="line">    long_desc_links = URI.extract(e.long_description).select!{|v| v =~ /http/}
-</span><span class="line">    if !long_desc_links.blank?
-</span><span class="line">      long_desc_links.each do |link|
-</span><span class="line">        find_broken_link(e.originating_site.domain,e.id, e.originating_site.reporting_email,link,"events")
-</span><span class="line">      end
-</span><span class="line">    end
-</span><span class="line">  end
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line">  <span class="vi">@events</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">all</span>
+</span><span class="line">  <span class="vi">@articles</span> <span class="o">=</span> <span class="no">Article</span><span class="o">.</span><span class="n">all</span>
+</span><span class="line">  <span class="vi">@resources</span> <span class="o">=</span> <span class="no">Resource</span><span class="o">.</span><span class="n">all</span>
+</span><span class="line"><span class="o">.</span>
+</span><span class="line"><span class="o">.</span>
+</span><span class="line"><span class="o">.</span>
+</span><span class="line">  <span class="vi">@events</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">e</span><span class="o">|</span>
+</span><span class="line">    <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">url?</span>
+</span><span class="line">      <span class="n">find_broken_link</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">e</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">e</span><span class="o">.</span><span class="n">url</span><span class="p">,</span><span class="s2">&quot;events&quot;</span><span class="p">)</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">    <span class="n">long_desc_links</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">long_description</span><span class="p">)</span><span class="o">.</span><span class="n">select!</span><span class="p">{</span><span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span> <span class="o">=~</span> <span class="sr">/http/</span><span class="p">}</span>
+</span><span class="line">    <span class="k">if</span> <span class="o">!</span><span class="n">long_desc_links</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class="line">      <span class="n">long_desc_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
+</span><span class="line">        <span class="n">find_broken_link</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">e</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">link</span><span class="p">,</span><span class="s2">&quot;events&quot;</span><span class="p">)</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">  @articles.each do |a|
-</span><span class="line">    if a.url_link?
-</span><span class="line">      find_broken_link(a.originating_site.domain,a.id, a.originating_site.reporting_email,a.url_link,"articles")
-</span><span class="line">    end
-</span><span class="line">    long_desc_links = URI.extract(a.main_content).select!{|v| v =~ /http/}
-</span><span class="line">    if !long_desc_links.blank?
-</span><span class="line">      long_desc_links.each do |link|
-</span><span class="line">        find_broken_link(a.originating_site.domain,a.id, a.originating_site.reporting_email,link,"articles")
-</span><span class="line">      end
-</span><span class="line">    end
+</span><span class="line">  <span class="vi">@articles</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">a</span><span class="o">|</span>
+</span><span class="line">    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">url_link?</span>
+</span><span class="line">      <span class="n">find_broken_link</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">url_link</span><span class="p">,</span><span class="s2">&quot;articles&quot;</span><span class="p">)</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">    <span class="n">long_desc_links</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">main_content</span><span class="p">)</span><span class="o">.</span><span class="n">select!</span><span class="p">{</span><span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span> <span class="o">=~</span> <span class="sr">/http/</span><span class="p">}</span>
+</span><span class="line">    <span class="k">if</span> <span class="o">!</span><span class="n">long_desc_links</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class="line">      <span class="n">long_desc_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
+</span><span class="line">        <span class="n">find_broken_link</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">link</span><span class="p">,</span><span class="s2">&quot;articles&quot;</span><span class="p">)</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">  end
+</span><span class="line">  <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">  @resources.each do |r|
-</span><span class="line">    if r.page_id?
-</span><span class="line">      if r.url?
-</span><span class="line">        find_broken_link(r.originating_site.domain,r.id, r.originating_site.reporting_email,r.url,"resources")
-</span><span class="line">      end
-</span><span class="line">    end
-</span><span class="line">  end
-</span><span class="line">`
+</span><span class="line">  <span class="vi">@resources</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
+</span><span class="line">    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">page_id?</span>
+</span><span class="line">      <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">url?</span>
+</span><span class="line">        <span class="n">find_broken_link</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="p">,</span><span class="s2">&quot;resources&quot;</span><span class="p">)</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>I started by creating a scope in resources that checks for a <code>page_id</code> and a <code>url</code>. I also created some aliases for <code>url_link</code> and <code>main_content</code> to in my <code>Article</code> model in order to have parity with the <code>Event</code> and <code>Resource</code> model in order to get some uniformity.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line"><span class="vi">@events</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">unlinked_events</span>
+</span><span class="line"><span class="vi">@event_links</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">linked_events</span>
+</span><span class="line"><span class="vi">@articles</span> <span class="o">=</span> <span class="no">Article</span><span class="o">.</span><span class="n">unlinked_articles</span>
+</span><span class="line"><span class="vi">@article_links</span> <span class="o">=</span> <span class="no">Article</span><span class="o">.</span><span class="n">linked_articles</span>
+</span><span class="line"><span class="vi">@resources</span> <span class="o">=</span> <span class="no">Resource</span><span class="o">.</span><span class="n">link_resources</span>
 </span><span class="line">
-</span><span class="line">I started by creating a scope in resources that checks for a `page_id` and a `url`. I also created some aliases for `url_link` and `main_content` to in my `Article` model in order to have parity with the `Event` and `Resource` model in order to get some uniformity.
+</span><span class="line"><span class="o">[</span><span class="vi">@event_links</span><span class="p">,</span> <span class="vi">@article_links</span><span class="p">,</span> <span class="vi">@resources</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">collection_item</span><span class="o">|</span>
+</span><span class="line">  <span class="n">collection_item</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class="line">    <span class="n">find_broken_link</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+</span><span class="line">                               <span class="n">item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span>
+</span><span class="line">                               <span class="n">item</span><span class="o">.</span><span class="n">url</span><span class="p">,</span><span class="n">item</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">pluralize</span><span class="p">)</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">`
-</span><span class="line">@events = Event.unlinked_events
-</span><span class="line">@event_links = Event.linked_events
-</span><span class="line">@articles = Article.unlinked_articles
-</span><span class="line">@article_links = Article.linked_articles
-</span><span class="line">@resources = Resource.link_resources
-</span><span class="line">
-</span><span class="line">[@event_links, @article_links, @resources].each do |collection_item|
-</span><span class="line">  collection_item.each do |item|
-</span><span class="line">    find_broken_link(item.originating_site.domain,item.id,
-</span><span class="line">                               item.originating_site.reporting_email,
-</span><span class="line">                               item.url,item.class.name.downcase.pluralize)
-</span><span class="line">  end
-</span><span class="line">end
-</span><span class="line">
-</span><span class="line">[@events, @articles].each do |collection_item|
-</span><span class="line">  collection_item.each do |item|
-</span><span class="line">    long_desc_links = URI.extract(item.long_description).select!{|v| v =~ /http/}
-</span><span class="line">    unless long_desc_links.blank?
-</span><span class="line">      long_desc_links.each do |link|
-</span><span class="line">        find_broken_link(item.originating_site.domain,item.id,
-</span><span class="line">                                   item.originating_site.reporting_email,
-</span><span class="line">                                   link,item.class.name.downcase.pluralize)
-</span><span class="line">      end
-</span><span class="line">    end
-</span><span class="line">  end
-</span><span class="line">end</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line"><span class="o">[</span><span class="vi">@events</span><span class="p">,</span> <span class="vi">@articles</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">collection_item</span><span class="o">|</span>
+</span><span class="line">  <span class="n">collection_item</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class="line">    <span class="n">long_desc_links</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">long_description</span><span class="p">)</span><span class="o">.</span><span class="n">select!</span><span class="p">{</span><span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span> <span class="o">=~</span> <span class="sr">/http/</span><span class="p">}</span>
+</span><span class="line">    <span class="k">unless</span> <span class="n">long_desc_links</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class="line">      <span class="n">long_desc_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
+</span><span class="line">        <span class="n">find_broken_link</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+</span><span class="line">                                   <span class="n">item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span>
+</span><span class="line">                                   <span class="n">link</span><span class="p">,</span><span class="n">item</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">pluralize</span><span class="p">)</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Was passing too much stuff into <code>find_broken_link</code> so that was decomposed.</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="code"><pre><code class=""><span class="line">[@event_links, @article_links, @resources].each do |collection_item|
-</span><span class="line">  collection_item.each do |item|
-</span><span class="line">    find_broken_link(link_details(item))
-</span><span class="line">  end
-</span><span class="line">end
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line"><span class="o">[</span><span class="vi">@event_links</span><span class="p">,</span> <span class="vi">@article_links</span><span class="p">,</span> <span class="vi">@resources</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">collection_item</span><span class="o">|</span>
+</span><span class="line">  <span class="n">collection_item</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class="line">    <span class="n">find_broken_link</span><span class="p">(</span><span class="n">link_details</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">[@events, @articles].each do |collection_item|
-</span><span class="line">  collection_item.each do |item|
-</span><span class="line">    long_desc_links = URI.extract(item.long_description).select!{|v| v =~ /http/}
-</span><span class="line">    unless long_desc_links.blank?
-</span><span class="line">      long_desc_links.each do |link|
-</span><span class="line">        find_broken_link(link_details(item, link))
-</span><span class="line">      end
-</span><span class="line">    end
-</span><span class="line">  end
-</span><span class="line">end
+</span><span class="line"><span class="o">[</span><span class="vi">@events</span><span class="p">,</span> <span class="vi">@articles</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">collection_item</span><span class="o">|</span>
+</span><span class="line">  <span class="n">collection_item</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class="line">    <span class="n">long_desc_links</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">long_description</span><span class="p">)</span><span class="o">.</span><span class="n">select!</span><span class="p">{</span><span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span> <span class="o">=~</span> <span class="sr">/http/</span><span class="p">}</span>
+</span><span class="line">    <span class="k">unless</span> <span class="n">long_desc_links</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class="line">      <span class="n">long_desc_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
+</span><span class="line">        <span class="n">find_broken_link</span><span class="p">(</span><span class="n">link_details</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">link</span><span class="p">))</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
 </span><span class="line">
-</span><span class="line">#method for cleaning up the passed in stuff called inside find_broken_link:
+</span><span class="line"><span class="c1">#method for cleaning up the passed in stuff called inside find_broken_link:</span>
 </span><span class="line">
-</span><span class="line">def link_details(link_item, link = nil)
-</span><span class="line">  {
-</span><span class="line">    :original_site =&gt; link_item.originating_site.domain,
-</span><span class="line">    :id =&gt; link_item.id,
-</span><span class="line">    :admin_email =&gt; link_item.originating_site.reporting_email,
-</span><span class="line">    :url =&gt; link.nil? ? link_item.url : link,
-</span><span class="line">    :page_type =&gt; link_item.class.name.downcase.pluralize
-</span><span class="line">  }
-</span><span class="line">end</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line"><span class="k">def</span> <span class="nf">link_details</span><span class="p">(</span><span class="n">link_item</span><span class="p">,</span> <span class="n">link</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class="line">  <span class="p">{</span>
+</span><span class="line">    <span class="ss">:original_site</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span>
+</span><span class="line">    <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+</span><span class="line">    <span class="ss">:admin_email</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span>
+</span><span class="line">    <span class="ss">:url</span> <span class="o">=&gt;</span> <span class="n">link</span><span class="o">.</span><span class="n">nil?</span> <span class="p">?</span> <span class="n">link_item</span><span class="o">.</span><span class="n">url</span> <span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+</span><span class="line">    <span class="ss">:page_type</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">pluralize</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Nothing here really sped the task up so that was the next part. I next implemented Celluloid and broke this up into three files.</p>
 
 <p>Lots of instance variables:</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="code"><pre><code class=""><span class="line">#checker.rb
-</span><span class="line">require 'celluloid/autostart'
-</span><span class="line">require 'logger'
-</span><span class="line">require_relative 'broken_link/link_cell'
-</span><span class="line">require_relative 'broken_link/link_checker'
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line"><span class="c1">#checker.rb</span>
+</span><span class="line"><span class="nb">require</span> <span class="s1">&#39;celluloid/autostart&#39;</span>
+</span><span class="line"><span class="nb">require</span> <span class="s1">&#39;logger&#39;</span>
+</span><span class="line"><span class="n">require_relative</span> <span class="s1">&#39;broken_link/link_cell&#39;</span>
+</span><span class="line"><span class="n">require_relative</span> <span class="s1">&#39;broken_link/link_checker&#39;</span>
 </span><span class="line">
-</span><span class="line">module Checker
-</span><span class="line">  DEFAULTS = {
-</span><span class="line">    default_protocol:   'http://',
-</span><span class="line">    pool_size:          25,
-</span><span class="line">    logger_class:       Logger,
-</span><span class="line">    admin_email:        "No Admin &lt;chssweb@gmu.edu&gt;",
-</span><span class="line">    log_file_name:      "bad_link_log.csv"
-</span><span class="line">  }
+</span><span class="line"><span class="k">module</span> <span class="nn">Checker</span>
+</span><span class="line">  <span class="no">DEFAULTS</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">default_protocol</span><span class="p">:</span>   <span class="s1">&#39;http://&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="n">pool_size</span><span class="p">:</span>          <span class="mi">25</span><span class="p">,</span>
+</span><span class="line">    <span class="n">logger_class</span><span class="p">:</span>       <span class="no">Logger</span><span class="p">,</span>
+</span><span class="line">    <span class="n">admin_email</span><span class="p">:</span>        <span class="s2">&quot;No Admin &lt;chssweb@gmu.edu&gt;&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="n">log_file_name</span><span class="p">:</span>      <span class="s2">&quot;bad_link_log.csv&quot;</span>
+</span><span class="line">  <span class="p">}</span>
 </span><span class="line">
-</span><span class="line">  def self.linkcheck(opts={})
-</span><span class="line">    link_check_results = LinkChecker.new(opts)
-</span><span class="line">    link_check_results.agent_pool.future.terminate
+</span><span class="line">  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">linkcheck</span><span class="p">(</span><span class="n">opts</span><span class="o">=</span><span class="p">{})</span>
+</span><span class="line">    <span class="n">link_check_results</span> <span class="o">=</span> <span class="no">LinkChecker</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span>
+</span><span class="line">    <span class="n">link_check_results</span><span class="o">.</span><span class="n">agent_pool</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">terminate</span>
 </span><span class="line">
-</span><span class="line">    link_check_results
-</span><span class="line">  end
-</span><span class="line">end</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">    <span class="n">link_check_results</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="code"><pre><code class=""><span class="line">module Checker
-</span><span class="line">  class LinkChecker
-</span><span class="line">    attr_reader :agent_pool, :opts, :default_protocol, :output_file, :logger
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line"><span class="k">module</span> <span class="nn">Checker</span>
+</span><span class="line">  <span class="k">class</span> <span class="nc">LinkChecker</span>
+</span><span class="line">    <span class="kp">attr_reader</span> <span class="ss">:agent_pool</span><span class="p">,</span> <span class="ss">:opts</span><span class="p">,</span> <span class="ss">:default_protocol</span><span class="p">,</span> <span class="ss">:output_file</span><span class="p">,</span> <span class="ss">:logger</span>
 </span><span class="line">
-</span><span class="line">    def initialize(override_opts={})
-</span><span class="line">      @opts  = DEFAULTS.merge(override_opts)
-</span><span class="line">      @default_protocol = opts[:default_protocol]
-</span><span class="line">      @output_file = opts[:output_file] || File.open(opts[:log_file_name], 'a')
-</span><span class="line">      @logger = opts[:logger_class].new(output_file)
-</span><span class="line">      @agent_pool = LinkCell.pool(size: opts[:pool_size], args: [logger])
-</span><span class="line">      @events = Event.unlinked_events
-</span><span class="line">      @event_links = Event.linked_events
-</span><span class="line">      @articles = Article.unlinked_articles
-</span><span class="line">      @article_links = Article.linked_articles
-</span><span class="line">      @resources = Resource.linkable
-</span><span class="line">      @count = 0
-</span><span class="line">      check_embedded_links
-</span><span class="line">      check_direct_links
-</span><span class="line">      self
-</span><span class="line">    ensure
-</span><span class="line">      output_file.close if output_file.respond_to?(:close)
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">override_opts</span><span class="o">=</span><span class="p">{})</span>
+</span><span class="line">      <span class="vi">@opts</span>  <span class="o">=</span> <span class="no">DEFAULTS</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">override_opts</span><span class="p">)</span>
+</span><span class="line">      <span class="vi">@default_protocol</span> <span class="o">=</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:default_protocol</span><span class="o">]</span>
+</span><span class="line">      <span class="vi">@output_file</span> <span class="o">=</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:output_file</span><span class="o">]</span> <span class="o">||</span> <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">opts</span><span class="o">[</span><span class="ss">:log_file_name</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+</span><span class="line">      <span class="vi">@logger</span> <span class="o">=</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:logger_class</span><span class="o">].</span><span class="n">new</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+</span><span class="line">      <span class="vi">@agent_pool</span> <span class="o">=</span> <span class="no">LinkCell</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="n">size</span><span class="p">:</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:pool_size</span><span class="o">]</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="o">[</span><span class="n">logger</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line">      <span class="vi">@events</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">unlinked_events</span>
+</span><span class="line">      <span class="vi">@event_links</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">linked_events</span>
+</span><span class="line">      <span class="vi">@articles</span> <span class="o">=</span> <span class="no">Article</span><span class="o">.</span><span class="n">unlinked_articles</span>
+</span><span class="line">      <span class="vi">@article_links</span> <span class="o">=</span> <span class="no">Article</span><span class="o">.</span><span class="n">linked_articles</span>
+</span><span class="line">      <span class="vi">@resources</span> <span class="o">=</span> <span class="no">Resource</span><span class="o">.</span><span class="n">linkable</span>
+</span><span class="line">      <span class="vi">@count</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">      <span class="n">check_embedded_links</span>
+</span><span class="line">      <span class="n">check_direct_links</span>
+</span><span class="line">      <span class="nb">self</span>
+</span><span class="line">    <span class="k">ensure</span>
+</span><span class="line">      <span class="n">output_file</span><span class="o">.</span><span class="n">close</span> <span class="k">if</span> <span class="n">output_file</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:close</span><span class="p">)</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    def check_direct_links
-</span><span class="line">      [@event_links, @article_links, @resources].each do |collection_item|
-</span><span class="line">        collection_item.each do |item|
-</span><span class="line">          find_broken_link(link_details(item))
-</span><span class="line">        end
-</span><span class="line">      end
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">check_direct_links</span>
+</span><span class="line">      <span class="o">[</span><span class="vi">@event_links</span><span class="p">,</span> <span class="vi">@article_links</span><span class="p">,</span> <span class="vi">@resources</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">collection_item</span><span class="o">|</span>
+</span><span class="line">        <span class="n">collection_item</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class="line">          <span class="n">find_broken_link</span><span class="p">(</span><span class="n">link_details</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+</span><span class="line">        <span class="k">end</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    def check_embedded_links
-</span><span class="line">      [@events, @articles].each do |collection_item|
-</span><span class="line">        collection_item.each do |item|
-</span><span class="line">          long_desc_links = URI.extract(item.long_description).select!{|v| v =~ /http/}
-</span><span class="line">          unless long_desc_links.blank?
-</span><span class="line">            long_desc_links.each do |link|
-</span><span class="line">              find_broken_link(link_details(item, link))
-</span><span class="line">            end
-</span><span class="line">          end
-</span><span class="line">        end
-</span><span class="line">      end
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">check_embedded_links</span>
+</span><span class="line">      <span class="o">[</span><span class="vi">@events</span><span class="p">,</span> <span class="vi">@articles</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">collection_item</span><span class="o">|</span>
+</span><span class="line">        <span class="n">collection_item</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class="line">          <span class="n">long_desc_links</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">long_description</span><span class="p">)</span><span class="o">.</span><span class="n">select!</span><span class="p">{</span><span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span> <span class="o">=~</span> <span class="sr">/http/</span><span class="p">}</span>
+</span><span class="line">          <span class="k">unless</span> <span class="n">long_desc_links</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class="line">            <span class="n">long_desc_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
+</span><span class="line">              <span class="n">find_broken_link</span><span class="p">(</span><span class="n">link_details</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">link</span><span class="p">))</span>
+</span><span class="line">            <span class="k">end</span>
+</span><span class="line">          <span class="k">end</span>
+</span><span class="line">        <span class="k">end</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    private
+</span><span class="line">    <span class="kp">private</span>
 </span><span class="line">
-</span><span class="line">    def link_details(link_item, link = nil)
-</span><span class="line">      {
-</span><span class="line">        :original_site =&gt; link_item.originating_site.domain,
-</span><span class="line">        :id =&gt; link_item.id,
-</span><span class="line">        :admin_email =&gt; link_item.originating_site.reporting_email.empty? ? "No Admin &lt;chssweb@gmu.edu&gt;" : link_item.originating_site.reporting_email,
-</span><span class="line">        :url =&gt; link.nil? ? link_item.url : link,
-</span><span class="line">        :page_type =&gt; link_item.class.name.downcase.pluralize
-</span><span class="line">      }
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">link_details</span><span class="p">(</span><span class="n">link_item</span><span class="p">,</span> <span class="n">link</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class="line">      <span class="p">{</span>
+</span><span class="line">        <span class="ss">:original_site</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span>
+</span><span class="line">        <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+</span><span class="line">        <span class="ss">:admin_email</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="o">.</span><span class="n">empty?</span> <span class="p">?</span> <span class="s2">&quot;No Admin &lt;chssweb@gmu.edu&gt;&quot;</span> <span class="p">:</span> <span class="n">link_item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span>
+</span><span class="line">        <span class="ss">:url</span> <span class="o">=&gt;</span> <span class="n">link</span><span class="o">.</span><span class="n">nil?</span> <span class="p">?</span> <span class="n">link_item</span><span class="o">.</span><span class="n">url</span> <span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+</span><span class="line">        <span class="ss">:page_type</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">pluralize</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    def find_broken_link(url)
-</span><span class="line">      agent_pool.future.get(url)
-</span><span class="line">    end
-</span><span class="line">  end
-</span><span class="line">end</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">    <span class="k">def</span> <span class="nf">find_broken_link</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span class="line">      <span class="n">agent_pool</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="code"><pre><code class=""><span class="line">module Checker
-</span><span class="line">  class LinkCell
-</span><span class="line">    include Celluloid
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line"><span class="k">module</span> <span class="nn">Checker</span>
+</span><span class="line">  <span class="k">class</span> <span class="nc">LinkCell</span>
+</span><span class="line">    <span class="kp">include</span> <span class="no">Celluloid</span>
 </span><span class="line">
-</span><span class="line">    attr_reader :logger
+</span><span class="line">    <span class="kp">attr_reader</span> <span class="ss">:logger</span>
 </span><span class="line">
-</span><span class="line">    def initialize(logger)
-</span><span class="line">      @logger = logger
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+</span><span class="line">      <span class="vi">@logger</span> <span class="o">=</span> <span class="n">logger</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    def organize_url(url, originating_site_domain)
-</span><span class="line">      url.insert(0, originating_site_domain) if url.match(/^\//)
-</span><span class="line">      url.insert(0, "http://") unless (((url.match(/^http\:\/\//)) or (url.match(/^https\:\/\//))) || url.empty?)
-</span><span class="line">      url = URI.encode(url) if (url =~ URI::DEFAULT_PARSER.regexp[:ABS_URI]).nil?
-</span><span class="line">      return url
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">organize_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">originating_site_domain</span><span class="p">)</span>
+</span><span class="line">      <span class="n">url</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">originating_site_domain</span><span class="p">)</span> <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^\//</span><span class="p">)</span>
+</span><span class="line">      <span class="n">url</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;http://&quot;</span><span class="p">)</span> <span class="k">unless</span> <span class="p">(((</span><span class="n">url</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^http\:\/\//</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^https\:\/\//</span><span class="p">)))</span> <span class="o">||</span> <span class="n">url</span><span class="o">.</span><span class="n">empty?</span><span class="p">)</span>
+</span><span class="line">      <span class="n">url</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">url</span> <span class="o">=~</span> <span class="no">URI</span><span class="o">::</span><span class="no">DEFAULT_PARSER</span><span class="o">.</span><span class="n">regexp</span><span class="o">[</span><span class="ss">:ABS_URI</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span>
+</span><span class="line">      <span class="k">return</span> <span class="n">url</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    def get(link)
-</span><span class="line">      site = link[:original_site]
-</span><span class="line">      return if organize_url(link[:url],site).empty?
-</span><span class="line">      baseurl = organize_url(link[:url],site)
-</span><span class="line">      begin
-</span><span class="line">        res = Net::HTTP.get_response(URI.parse(baseurl))
-</span><span class="line">        puts "Code: #{res.code} for #{link[:url]}"
-</span><span class="line">        logger &lt;&lt; "404 error, #{link[:id]}, #{link[:original_site]}, \
-</span><span class="line">                  #{link[:admin_email]}, #{link[:url]}, #{link[:page_type]}\n" if (res.code.to_i == 404)
-</span><span class="line">      rescue
-</span><span class="line">        puts "Broken/bad link for #{link[:url]}"
-</span><span class="line">        logger &lt;&lt; "Broken link error, #{link[:id]}, #{link[:original_site]}, \
-</span><span class="line">                  #{link[:admin_email]}, #{link[:url]}, #{link[:page_type]}\n"
-</span><span class="line">      end
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+</span><span class="line">      <span class="n">site</span> <span class="o">=</span> <span class="n">link</span><span class="o">[</span><span class="ss">:original_site</span><span class="o">]</span>
+</span><span class="line">      <span class="k">return</span> <span class="k">if</span> <span class="n">organize_url</span><span class="p">(</span><span class="n">link</span><span class="o">[</span><span class="ss">:url</span><span class="o">]</span><span class="p">,</span><span class="n">site</span><span class="p">)</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class="line">      <span class="n">baseurl</span> <span class="o">=</span> <span class="n">organize_url</span><span class="p">(</span><span class="n">link</span><span class="o">[</span><span class="ss">:url</span><span class="o">]</span><span class="p">,</span><span class="n">site</span><span class="p">)</span>
+</span><span class="line">      <span class="k">begin</span>
+</span><span class="line">        <span class="n">res</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">baseurl</span><span class="p">))</span>
+</span><span class="line">        <span class="nb">puts</span> <span class="s2">&quot;Code: </span><span class="si">#{</span><span class="n">res</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2"> for </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:url</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class="line">        <span class="n">logger</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;404 error, </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:original_site</span><span class="o">]</span><span class="si">}</span><span class="s2">, \</span>
+</span><span class="line"><span class="s2">                  </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:admin_email</span><span class="o">]</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:url</span><span class="o">]</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:page_type</span><span class="o">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">to_i</span> <span class="o">==</span> <span class="mi">404</span><span class="p">)</span>
+</span><span class="line">      <span class="k">rescue</span>
+</span><span class="line">        <span class="nb">puts</span> <span class="s2">&quot;Broken/bad link for </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:url</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class="line">        <span class="n">logger</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Broken link error, </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:original_site</span><span class="o">]</span><span class="si">}</span><span class="s2">, \</span>
+</span><span class="line"><span class="s2">                  </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:admin_email</span><span class="o">]</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:url</span><span class="o">]</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">link</span><span class="o">[</span><span class="ss">:page_type</span><span class="o">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">  end
-</span><span class="line">end</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>I’m still on the fence on <code>DEFAULTS</code> option has I pass in. I realize it is probably better OO to do it that way and it makes it better for customizing and changing in the future but I fell that right now it is just wasting space.</p>
 
 <p>So after cleaning up all those ugly instance variables:</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="code"><pre><code class=""><span class="line">#link_checker.rb
-</span><span class="line">module Checker
-</span><span class="line">  class LinkChecker
-</span><span class="line">    attr_reader :agent_pool, :direct_links, :embedded_links, :logger, :opts, :output_file
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line"><span class="c1">#link_checker.rb</span>
+</span><span class="line"><span class="k">module</span> <span class="nn">Checker</span>
+</span><span class="line">  <span class="k">class</span> <span class="nc">LinkChecker</span>
+</span><span class="line">    <span class="kp">attr_reader</span> <span class="ss">:agent_pool</span><span class="p">,</span> <span class="ss">:direct_links</span><span class="p">,</span> <span class="ss">:embedded_links</span><span class="p">,</span> <span class="ss">:logger</span><span class="p">,</span> <span class="ss">:opts</span><span class="p">,</span> <span class="ss">:output_file</span>
 </span><span class="line">
-</span><span class="line">    def initialize(override_opts={})
-</span><span class="line">      @opts  = DEFAULTS.merge(override_opts)
-</span><span class="line">      @output_file = opts[:output_file] || File.open(opts[:log_file_name], 'a')
-</span><span class="line">      @logger = opts[:logger_class].new(output_file)
-</span><span class="line">      @agent_pool = LinkCell.pool(size: opts[:pool_size], args: [logger])
-</span><span class="line">      @embedded_links = Event.unlinked_events + Article.unlinked_articles
-</span><span class="line">      @direct_links = Event.linked_events + Article.linked_articles + Resource.linkable
-</span><span class="line">      check_embedded_links
-</span><span class="line">      check_direct_links
-</span><span class="line">      self
-</span><span class="line">    ensure
-</span><span class="line">      output_file.close if output_file.respond_to?(:close)
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">override_opts</span><span class="o">=</span><span class="p">{})</span>
+</span><span class="line">      <span class="vi">@opts</span>  <span class="o">=</span> <span class="no">DEFAULTS</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">override_opts</span><span class="p">)</span>
+</span><span class="line">      <span class="vi">@output_file</span> <span class="o">=</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:output_file</span><span class="o">]</span> <span class="o">||</span> <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">opts</span><span class="o">[</span><span class="ss">:log_file_name</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+</span><span class="line">      <span class="vi">@logger</span> <span class="o">=</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:logger_class</span><span class="o">].</span><span class="n">new</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+</span><span class="line">      <span class="vi">@agent_pool</span> <span class="o">=</span> <span class="no">LinkCell</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="ss">size</span><span class="p">:</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:pool_size</span><span class="o">]</span><span class="p">,</span> <span class="ss">args</span><span class="p">:</span> <span class="o">[</span><span class="n">logger</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line">      <span class="vi">@embedded_links</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">unlinked_events</span> <span class="o">+</span> <span class="no">Article</span><span class="o">.</span><span class="n">unlinked_articles</span>
+</span><span class="line">      <span class="vi">@direct_links</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">linked_events</span> <span class="o">+</span> <span class="no">Article</span><span class="o">.</span><span class="n">linked_articles</span> <span class="o">+</span> <span class="no">Resource</span><span class="o">.</span><span class="n">linkable</span>
+</span><span class="line">      <span class="n">check_embedded_links</span>
+</span><span class="line">      <span class="n">check_direct_links</span>
+</span><span class="line">      <span class="nb">self</span>
+</span><span class="line">    <span class="k">ensure</span>
+</span><span class="line">      <span class="n">output_file</span><span class="o">.</span><span class="n">close</span> <span class="k">if</span> <span class="n">output_file</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:close</span><span class="p">)</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    def check_direct_links
-</span><span class="line">      direct_links.each do |item|
-</span><span class="line">        find_broken_link(link_details(item))
-</span><span class="line">      end
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">check_direct_links</span>
+</span><span class="line">      <span class="n">direct_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class="line">        <span class="n">find_broken_link</span><span class="p">(</span><span class="n">link_details</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    def check_embedded_links
-</span><span class="line">      embedded_links.each do |item|
-</span><span class="line">        long_desc_links = URI.extract(item.long_description).select!{|v| v =~ /http/}
-</span><span class="line">        unless long_desc_links.blank?
-</span><span class="line">          long_desc_links.each do |link|
-</span><span class="line">            find_broken_link(link_details(item, link))
-</span><span class="line">          end
-</span><span class="line">        end
-</span><span class="line">      end
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">check_embedded_links</span>
+</span><span class="line">      <span class="n">embedded_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class="line">        <span class="n">long_desc_links</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">long_description</span><span class="p">)</span><span class="o">.</span><span class="n">select!</span><span class="p">{</span><span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span> <span class="o">=~</span> <span class="sr">/http/</span><span class="p">}</span>
+</span><span class="line">        <span class="k">unless</span> <span class="n">long_desc_links</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class="line">          <span class="n">long_desc_links</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
+</span><span class="line">            <span class="n">find_broken_link</span><span class="p">(</span><span class="n">link_details</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">link</span><span class="p">))</span>
+</span><span class="line">          <span class="k">end</span>
+</span><span class="line">        <span class="k">end</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    def link_details(link_item, link = nil)
-</span><span class="line">      {
-</span><span class="line">        :original_site =&gt; link_item.originating_site.domain,
-</span><span class="line">        :id =&gt; link_item.id,
-</span><span class="line">        :admin_email =&gt; link_item.originating_site.reporting_email.empty? ? "No Admin &lt;chssweb@gmu.edu&gt;" : link_item.originating_site.reporting_email,
-</span><span class="line">        :url =&gt; link.nil? ? link_item.url : link,
-</span><span class="line">        :page_type =&gt; link_item.class.name.downcase.pluralize,
-</span><span class="line">        :originating_site =&gt; link_item.originating_site.id
-</span><span class="line">      }
-</span><span class="line">    end
+</span><span class="line">    <span class="k">def</span> <span class="nf">link_details</span><span class="p">(</span><span class="n">link_item</span><span class="p">,</span> <span class="n">link</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class="line">      <span class="p">{</span>
+</span><span class="line">        <span class="ss">:original_site</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span>
+</span><span class="line">        <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+</span><span class="line">        <span class="ss">:admin_email</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="o">.</span><span class="n">empty?</span> <span class="p">?</span> <span class="s2">&quot;No Admin &lt;chssweb@gmu.edu&gt;&quot;</span> <span class="p">:</span> <span class="n">link_item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">reporting_email</span><span class="p">,</span>
+</span><span class="line">        <span class="ss">:url</span> <span class="o">=&gt;</span> <span class="n">link</span><span class="o">.</span><span class="n">nil?</span> <span class="p">?</span> <span class="n">link_item</span><span class="o">.</span><span class="n">url</span> <span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+</span><span class="line">        <span class="ss">:page_type</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">pluralize</span><span class="p">,</span>
+</span><span class="line">        <span class="ss">:originating_site</span> <span class="o">=&gt;</span> <span class="n">link_item</span><span class="o">.</span><span class="n">originating_site</span><span class="o">.</span><span class="n">id</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">    <span class="k">end</span>
 </span><span class="line">
-</span><span class="line">    def find_broken_link(url)
-</span><span class="line">      agent_pool.future.get(url)
-</span><span class="line">    end
-</span><span class="line">  end
-</span><span class="line">end
-</span><span class="line">###</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">    <span class="k">def</span> <span class="nf">find_broken_link</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span class="line">      <span class="n">agent_pool</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span><span class="line"><span class="c1">###</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 <p>I wanted to start fresh with a new log each time so:</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="code"><pre><code class=""><span class="line">require 'celluloid/autostart'
-</span><span class="line">require 'logger'
-</span><span class="line">require_relative 'broken_link/link_cell'
-</span><span class="line">require_relative 'broken_link/link_checker'
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;celluloid/autostart&#39;</span>
+</span><span class="line"><span class="nb">require</span> <span class="s1">&#39;logger&#39;</span>
+</span><span class="line"><span class="n">require_relative</span> <span class="s1">&#39;broken_link/link_cell&#39;</span>
+</span><span class="line"><span class="n">require_relative</span> <span class="s1">&#39;broken_link/link_checker&#39;</span>
 </span><span class="line">
-</span><span class="line">module Checker
-</span><span class="line">  DEFAULTS = {
-</span><span class="line">    pool_size:          25,
-</span><span class="line">    logger_class:       Logger,
-</span><span class="line">    admin_email:        "No Admin &lt;chssweb@gmu.edu&gt;",
-</span><span class="line">    log_file_name:      "bad_link_log.csv"
-</span><span class="line">  }
+</span><span class="line"><span class="k">module</span> <span class="nn">Checker</span>
+</span><span class="line">  <span class="no">DEFAULTS</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">pool_size</span><span class="p">:</span>          <span class="mi">25</span><span class="p">,</span>
+</span><span class="line">    <span class="n">logger_class</span><span class="p">:</span>       <span class="no">Logger</span><span class="p">,</span>
+</span><span class="line">    <span class="n">admin_email</span><span class="p">:</span>        <span class="s2">&quot;No Admin &lt;chssweb@gmu.edu&gt;&quot;</span><span class="p">,</span>
+</span><span class="line">    <span class="n">log_file_name</span><span class="p">:</span>      <span class="s2">&quot;bad_link_log.csv&quot;</span>
+</span><span class="line">  <span class="p">}</span>
 </span><span class="line">
-</span><span class="line">  def self.linkcheck(opts={})
-</span><span class="line">    File.delete("bad_link_log.csv") if File.exist?("bad_link_log.csv")
-</span><span class="line">    link_check_results = LinkChecker.new(opts)
-</span><span class="line">    link_check_results.agent_pool.future.terminate
+</span><span class="line">  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">linkcheck</span><span class="p">(</span><span class="n">opts</span><span class="o">=</span><span class="p">{})</span>
+</span><span class="line">    <span class="no">File</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;bad_link_log.csv&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exist?</span><span class="p">(</span><span class="s2">&quot;bad_link_log.csv&quot;</span><span class="p">)</span>
+</span><span class="line">    <span class="n">link_check_results</span> <span class="o">=</span> <span class="no">LinkChecker</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span>
+</span><span class="line">    <span class="n">link_check_results</span><span class="o">.</span><span class="n">agent_pool</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">terminate</span>
 </span><span class="line">
-</span><span class="line">    link_check_results
-</span><span class="line">  end
-</span><span class="line">end</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">    <span class="n">link_check_results</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>No updates yet on the <code>link_cell.rb</code> file but this has greatly improved the speed of the task. What was a ~35 minute task now runs in about a minute.</p>
 
