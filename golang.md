@@ -3,24 +3,22 @@ layout: page
 title: Golang Resources
 permalink: /golang/
 banner_image: gopher.png
-banner_image_alt: Ruby for Good
 ---
 
+I've been learning and playing with golang and I wanted a place to store various useful resources I've found.
 
-http://howistart.org/posts/go/1
+[Webapp from Scratch](http://howistart.org/posts/go/1)
 
-https://github.com/golang/go/wiki/Learn
+[Learn Golang](https://github.com/golang/go/wiki/Learn)
 
-https://github.com/golang/go/wiki/LearnServerProgramming
+[Golang Server Programming](https://github.com/golang/go/wiki/LearnServerProgramming)
 
-https://gist.github.com/honkskillet/bd1f72223dd8e06b5ce6
+[Golang Tutorials](https://gist.github.com/honkskillet/bd1f72223dd8e06b5ce6)
 
-http://dave.cheney.net/resources-for-new-go-programmers
+[New Golang Programmer Resources](http://dave.cheney.net/resources-for-new-go-programmers)
 
-http://thenewstack.io/cli-command-line-programming-with-go/
+[CLI Apps with Golang](http://thenewstack.io/cli-command-line-programming-with-go/)
 
-https://gobyexample.com/
+[Golang Examples](https://gobyexample.com/)
 
-https://gist.github.com/honkskillet/bd1f72223dd8e06b5ce6
-
-http://awesome-go.com/
+[Golang Projects (like Rubygems)](http://awesome-go.com/)
