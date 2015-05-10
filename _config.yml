@@ -1,0 +1,60 @@
+# Site settings
+title: Poignant Code
+tagline: “when you don’t create things, you become defined by your tastes rather than ability. your tastes only narrow & exclude people. so create. ― Why The Lucky Stiff”
+email: gayanvirajith@gmail.com
+description: | # > # this means to ignore newlines until "baseurl:"
+  I am a web developer who works at George Mason University. I love anything Web related, new technologies, all things nerdy, coffee roasting, homebrewing and things dealing with statistics and data. I also co-founded and help run the best meetup group around, Arlington Ruby!
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://localhost:4000" # the base hostname & protocol for your site
+logourl: /assets/images/logo.png # Site logo
+author: "Sean Marcia"
+author_thumbnail: "/assets/images/avatars.jpg" # Author avatar
+# Theme customization - please change from the defaults!
+theme:
+  # Color for sidebar bar, links, etc
+  highlight_color: "#104E8B" #205081" # "#272935"
+  # Social media links, leave blank to ignore
+  social:
+    github: seanmarcia
+    twitter: seanmarcia
+    #facebook: gayanvirajith
+    gplus: +seanmarcia
+    # dribble: gayanvirajith
+    #pinterest: gayanvirajith
+
+  # Enable share buttons on post footer
+  show_share_buttons: true
+
+  # Show author picure, name and social links on post footer
+  show_author_info: true
+
+  # Disqus comments manager - shortname
+  # disqus_shortname: gaya-webcreate
+
+  # Google Analytics/Webmaster key, leave blank to ignore
+  google_analytics_key:
+  google_webmaster_key:
+
+# Build settings
+markdown: kramdown
+
+# Permalinks
+permalink:        pretty
+
+# Pagination config
+paginate: 5
+
+# Files/Folders to be excluded from generated _site folder
+exclude:
+  - CNAME
+  - Gemfile
+  - Rakefile
+  - README.md
+  - .gitignore
+  - .sass-cache
+  - Gemfile.lock
+
+# Sass conversion configs
+sass:
+  sass_dir: assets/css/_sass
+  style: :compressed

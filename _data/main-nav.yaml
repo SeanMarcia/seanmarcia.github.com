@@ -1,0 +1,8 @@
+- title: "About me" # Title/Caption of the menu item
+  href: "/about" # the page where it pointed
+- title: "Blog Archive"
+  href: "/archive"
+- title: "Ruby for Good"
+  href: "/r4g"
+- title: "Golang Resources"
+  href: "/golang"

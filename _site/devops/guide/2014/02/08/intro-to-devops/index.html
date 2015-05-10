@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+  <title>Poignant Code</title>
+    <meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Intro to DevOps - Poignant Code</title>
+    <meta name="description" content="I am a web developer who works at George Mason University. I love anything Web related, new technologies, all things nerdy, coffee roasting, homebrewing and things dealing with statistics and data. I also co-founded and help run the best meetup group around, Arlington Ruby!
+">
+    <meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Intro to DevOps - Poignant Code"><meta property="og:site_name" content="Poignant Code"><meta property="og:description" content="I am a web developer who works at George Mason University. I love anything Web related, new technologies, all things nerdy, coffee roasting, homebrewing and things dealing with statistics and data. I also co-founded and help run the best meetup group around, Arlington Ruby!"><meta property="og:url" content="http://localhost:4000/devops/guide/2014/02/08/intro-to-devops/"><meta property="article:published_time" content="2014-02-08T04:15:02-07:00"><meta property="article:author" content="http://localhost:4000/about"><meta property="og:image" content="http://localhost:4000/assets/images/devops.jpg">
+
+    
+
+    
+
+    <link rel="alternate" type="application/rss+xml" href="http://localhost:4000/feed.xml">
+    <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+    <link rel="prefetch" href="http://localhost:4000">
+    <link rel="canonical" href="http://localhost:4000/devops/guide/2014/02/08/intro-to-devops/">
+    <link rel="stylesheet"
+    href="http://localhost:4000/assets/css/main.css">
+
+    <!-- IE Fixes -->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">a,.post-title a{color:#104E8B}a:hover{border-bottom-color:#104E8B}.sidebar{background-color:#104E8B}.wc-top,.sidebar-toggle:active,#sidebar-checkbox:checked ~ .sidebar-toggle{background-color:#104E8B}.sidebar a:hover,.sidebar .sidebar-nav a{border-bottom-color:#135ba2}.sidebar .sidebar-nav{border-top-color:#135ba2}.sidebar .sidebar-nav a.sidebar-nav-item:hover,.sidebar .sidebar-nav a.sidebar-nav-item:focus{background:#125699}.sidebar .sidebar-nav .sidebar-nav-item.active{background-color:#0e467d}ul.social-media li>a{background-color:#0e467d;border-color:#135ba2;border-bottom-color:#135ba2 !important}ul.social-media li>a:hover{background-color:#a5cdf5}.btn{border-color:#104E8B;background:#104e8b}.btn:hover,.btn:focus{border-color:#0d4174;background:#0d4174}</style>
+  </head>
+  <body>
+    <input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox"><div class="sidebar" id="sidebar">    <img    src="http://localhost:4000/assets/images/avatars.jpg"    alt="Poignant Code" />    <div class="sidebar-info">      <p>        I am a web developer who works at George Mason University. I love anything Web related, new technologies, all things nerdy, coffee roasting, homebrewing and things dealing with statistics and data. I also co-founded and help run the best meetup group around, Arlington Ruby!      </p>  </div>  <nav class="sidebar-nav">    <a class="sidebar-nav-item"      href="http://localhost:4000/">      Home    </a>                        <a class="sidebar-nav-item "      href="http://localhost:4000/about">      About me    </a>                        <a class="sidebar-nav-item "      href="http://localhost:4000/archive">      Blog Archive    </a>                        <a class="sidebar-nav-item "      href="http://localhost:4000/r4g">      Ruby for Good    </a>                        <a class="sidebar-nav-item "      href="http://localhost:4000/golang">      Golang Resources    </a>        <a class="sidebar-nav-item"      href="http://github.com/seanmarcia"      target="_blank">      GitHub/Download    </a>  </nav>  <div class="sidebar-info small">     <p>     </p>  </div>  <ul class="social-media">        <li>        <a title="seanmarcia on Twitter"            href="https://twitter.com/seanmarcia"            class="twitter wc-img-replace" target="_blank">Twitter</a>    </li>            <li>        <a title="+seanmarcia on Google Plus"            href="https://plus.google.com/+seanmarcia"            class="google wc-img-replace" target="_blank">Google</a>    </li>                <li>        <a title="seanmarcia on Github"            href="https://github.com/seanmarcia"            class="github wc-img-replace" target="_blank">Github</a>    </li>                <li>        <a title="Subscribe via RSS"            href="http://localhost:4000/feed.xml"            class="rss wc-img-replace" target="_blank">            RSS        </a>    </li></ul></div>
+    <div class="main-wrapper">
+      <div class="header">
+        <div class="container">
+          <div class="header-title">
+            <a href="http://localhost:4000/"
+              title="Poignant Code">
+              <h1>Poignant Code</h1>
+              <h3><small>“when you don’t create things, you become defined by your tastes rather than ability. your tastes only narrow & exclude people. so create. ― Why The Lucky Stiff”</small></h3>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="container content">
+          <div class="post">
+
+  
+  <div class="banner-image">
+    <img 
+        src="http://localhost:4000/assets/images/devops.jpg" 
+        alt="">
+  </div>
+  
+
+  
+
+  <header class="post-header">
+    <h1 class="post-title">Intro to DevOps</h1>
+    <p class="post-meta">
+    
+      <span class="categories">
+      devops and guide
+      </span> |
+    
+    <span class="post-date">
+    Feb 8, 2014  
+    </span>
+    </p>
+  </header>
+
+  <article class="post-content">
+    <p><strong>Update:</strong> I gave this talk at the <a href="(http://www.meetup.com/dcruby/events/101392262/)">DC Ruby Users Group</a> and was asked which of the following solutions I chose and why. I chose Chef for provisioning and configuring servers mostly because I have friends in the Chef community but if I were to choose again, I would likely use Ansible as Chef is more power than I need since we only have three servers. I chose Capistrano for deployment because I’ve used it in the past and found it dead simple to use. I use Airbrake for errors (but am looking into bugsnag) and monitoring with New Relic. I don’t aggregate my logs or monitor my servers other than what New Relic and Airbrake give mostly because it didn’t make sense with the small architecture we have. <strong>End Update</strong></p>
+
+<p>We used manage hosting at work and when we recently scaled out our architecture we found that at our host, despite us having a single application, increased the prices proportionally with the number of servers. We understand that each additional server costs an additional fee but there was no break on support costs. We know that they, like a lot of companies, use AWS for infrastructure and so we are able to price out what our instances cost and saw that we were paying a premium of approximately $150 a month for the insurance of being able to call someone up in case of trouble or if we are having any issues. The problem and what we couldn’t justify the extra expense for was that the premium is levied on each server so having 2 application servers rather than one which would not double the number of support calls or use of their services would still double our support costs. While we have avoided having a DevOps team ourselves it finally made sense to learn the tools. I was surprising how easy and “rubylike” many of them were. I decided to share what I learned because we have recently had members of the meet-up group I help organize asking what exactly DevOps is.</p>
+
+<h3 id="what-is-devops">What is DevOps?</h3>
+<p>You hear a lot of people talk about DevOps but generally they are saying things like Chef, Puppet, Nagios and so forth. While those are all components of DevOps, I did some looking and the best description I could find was “System administrators participating in an agile development process alongside developers and using many of the same agile techniques for their systems work.” I’m assuming if you are reading this you are a developer who was tasked with becoming their companies DevOps person.</p>
+
+<h3 id="what-are-the-required-skills-needed-for-devops">What are the required skills needed for DevOps?</h3>
+<p>I found this to be a pretty difficult question to answer and it made sense to differentiate between technical and non-technical skills.</p>
+
+<p>Assuming you are developer and have those skills covered, you will need to do a deep dive into system administration and all the requisite unix skills. While the list of unix skills is quite expansive (grep, sed, cat, chmod, du, shell scripting, TCP/IP networking, DNS, mail, virtualization, and so on) the two books I own that are excellent reference manuals are:</p>
+
+<p><img src="/assets/images/book1.jpg" alt="book1" /></p>
+
+<p>and</p>
+
+<p><img src="/assets/images/book2.jpg" alt="book1" /></p>
+
+<h3 id="responsibilities-of-devops">Responsibilities of DevOps</h3>
+<p>As the DevOps person, these are the things you are going to want to think about:</p>
+
+<ul>
+  <li>provisioning virtual machines</li>
+  <li>configuring network devices and servers</li>
+  <li>deploying you applications</li>
+  <li>collecting logs * monitoring applications</li>
+  <li>monitoring your hardware</li>
+  <li>monitoring application performance</li>
+</ul>
+
+<p><strong>You want to automate everything</strong></p>
+
+<h4 id="provisioning-and-configuring-servers">Provisioning and Configuring Servers</h4>
+
+<ul>
+  <li>Chef</li>
+  <li>Ansible</li>
+  <li>Puppet</li>
+  <li>Shell Scripts</li>
+  <li>Manual</li>
+</ul>
+
+<p>Chef, Ansible and Puppet all work in a similar fashion. You write recipes, manifests or playbooks so you can repeat the same actions over and over. Repeatability is paramount as you want to be able create an identical environment every time you spin up a server. This helps in consistency and ensures that you will be able to easily identify and track down errors. If each server is configured differently you might mistake a configuration conflict with a an application error. You will need to pick a cloud provider like AWS, Rackspace or Digital Ocean as a place for deploying your servers to.</p>
+
+<h4 id="deploying-your-application">Deploying your Application</h4>
+<p>Part of the deployment process and something that is under the purview of DevOps is the deployment process. An example deployment process might look something like this:</p>
+
+<ol>
+  <li>Continuous Integration shows all tests are passing.</li>
+  <li>Deploy the Application to your testing environment.</li>
+  <li>QA tests the Application and approves deployment.</li>
+  <li>Deploy the Application to production.</li>
+</ol>
+
+<p>All the steps in there are monitored by DevOps. DevOps monitors and configures your CI server, spins up testing environments and deploys to that environment and then deploys to production.</p>
+
+<p>There are several good choices for CI, some of the popular choices are:</p>
+
+<ul>
+  <li>Jenkins</li>
+  <li>Travis</li>
+  <li>CruiseControl</li>
+</ul>
+
+<p>There are also numerous options for deploying your application such as:</p>
+
+<ul>
+  <li>Capistrano</li>
+  <li>Fabric</li>
+  <li>Shell Scripts</li>
+</ul>
+
+<p>It is possible to your provisioning tool (like Chef) to also handle the deploying of your application but personally I like the separation of responsibilities.</p>
+
+<h4 id="log-collection">Log Collection</h4>
+<p>Having all your server logs in one place is extremely valuable especially when you are trying to track down errors. You will want to brush up on your Unix commands like grep to make searching and parsing these logs easy. A couple of popular logging applications are:</p>
+
+<ul>
+  <li>Loggly</li>
+  <li>LogStash</li>
+</ul>
+
+<h4 id="monitoring-applications">Monitoring Applications</h4>
+
+<p>Monitoring and application performance tools go hand in hand since you typically monitor for performance uptime. In the Ruby/Rails community the two most popular error monitoring services that will let you know when exceptions have occurred are:</p>
+
+<ul>
+  <li>Airbrake</li>
+  <li>Honeybadger</li>
+  <li>Bugsnag</li>
+</ul>
+
+<p>For monitoring things like how fast pages are loading, which pages are problem pages, CPU usage, memory and so on, the two most popular performance monitoring tools are:</p>
+
+<ul>
+  <li>New Relic</li>
+  <li>Scout</li>
+</ul>
+
+<h4 id="monitoring-your-hardwareservers">Monitoring your Hardware/Servers</h4>
+
+<p>You will want to monitor that unix services are running (ssh, mail, pop, http) in addition to seeing if a server, load balancer or db server is down. Good monitoring tools will also be customizable to show how much space is left on a give server in a given directory, monitor your databases and how long a connect takes as well as the lag time to the slave dbs. Monitoring software is also configurable to send alerts that you can customize for each of these things. The most popular hardware monitoring software is:</p>
+
+<ul>
+  <li>Nagios</li>
+  <li>Icinga</li>
+  <li>Sensu</li>
+  <li>Zabbix</li>
+</ul>
+
+<h4 id="non-technical-skills">Non Technical Skills</h4>
+
+<p>DevOps also needs to be aware of what the business side is doing. A good read on more about this can be had with the following book:</p>
+
+<p><img src="/assets/images/book3.png" alt="book1" /></p>
+
+<p>Two especially important areas for DevOps to work in conjunction with are:</p>
+
+<ul>
+  <li>Sales</li>
+  <li>Marketing</li>
+</ul>
+
+<p>If it isn’t apparent why, just imagine if a marketing team were to run a series of advertisements; perhaps at an event like the Superbowl where your application will be heard about by millions and then get swamped with traffic afterwards. If you are aware of the coming traffic you can spin up extra servers to handle the traffic so your customers are not left dissatisfied. A similar story is easy to imagine with sales. If your sales team is promising features to clients, as DevOps you need to be aware of that so you can ensure you have environments for QA to test and to be sure that the features go through the full testing process.</p>
+
+<h4 id="maintenance">Maintenance</h4>
+
+<p>I’ve included maintenance in here because you are going to have to deal with budget/finance people. If you are paying for a support contract with new relic or airbrake or you want to start paying for a different service of some sort. The money people tend to want to know about these contracts, how long they will last, how much they will cost and so on. The other part of maintenance, such as updating and patching software often can take a LOT of time. If the DevOps team is planning to upgrade/patch/change from ubuntu 10.04 to 13.04 because 10.04 doesn’t fully support a new feature you want to add you might be looking at a multi day or event week process as you upgrade everything. People will need to know that devops will be out of commission or devoting a lot of time to it.</p>
+
+<h3 id="benefits">Benefits</h3>
+<p>Assuming you have done all the DevOps things correctly the benefits you are looking at are:</p>
+
+<ul>
+  <li>Faster and easier deployments</li>
+  <li>Easier to roll back from mistakes</li>
+  <li>Less Problems to fix</li>
+  <li>Less time spent fixing things and more time developing</li>
+  <li>Faster roll out of features</li>
+</ul>
+
+    
+  </article>
+
+  
+    <div class="related-posts">
+      <h4>Related Posts</h4>
+      <ul>
+        
+          <li>
+            <h5>
+              <a href="http://localhost:4000/ruby/community/2014/12/14/rubyconf-au/">
+                Rubyconf Australia Retrospective
+                <small>14 Dec 2014</small>
+              </a>
+            </h5>
+          </li>
+        
+          <li>
+            <h5>
+              <a href="http://localhost:4000/ruby/meetups/2014/12/14/arlington-ruby/">
+                Reflecting on Arlington Ruby
+                <small>14 Dec 2014</small>
+              </a>
+            </h5>
+          </li>
+        
+          <li>
+            <h5>
+              <a href="http://localhost:4000/devops/guide/2014/10/27/refactoring-towards-celluloid/">
+                Refactoring towards Celluloid
+                <small>27 Oct 2014</small>
+              </a>
+            </h5>
+          </li>
+        
+      </ul>
+    </div>
+  
+
+  <div class="author-info">
+    
+      <div class="author">   <a href="http://localhost:4000/about">    <img       src="http://localhost:4000/assets/images/avatars.jpg"      alt="Poignant Code" width="60" height="60" />  </a>    <h5>Author</h4>  <h6>    <a href="http://localhost:4000/about">      Sean Marcia    </a>  </h5>  <p>    Find me on            <a title="seanmarcia on Twitter"             href="https://twitter.com/seanmarcia"             class="twitter" target="_blank">Twitter</a>                     /        <a title="+seanmarcia on Google Plus"             href="https://plus.google.com/+seanmarcia"             class="google" target="_blank">Google</a>      </p></div>
+    
+  
+    
+      <div class="share-buttons">  <h5>Share this post on</h5>  <ul class="social-media">    <li>        <a title="seanmarcia on Twitter"           href="https://twitter.com/intent/tweet?original_referer=http://localhost:4000/devops/guide/2014/02/08/intro-to-devops/&amp;text=Intro to DevOps&amp;url=http://localhost:4000/devops/guide/2014/02/08/intro-to-devops/" class="twitter wc-img-replace" target="_blank">          Twitter        </a>    </li>       <li>        <a title="+seanmarcia on Google Plus"             href="https://plus.google.com/share?url=http://localhost:4000/devops/guide/2014/02/08/intro-to-devops/"             class="google wc-img-replace" target="_blank">Google</a>    </li>    <li>        <a title=" on Facebook"             href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/devops/guide/2014/02/08/intro-to-devops/&amp;t=Intro to DevOps"             class="facebook wc-img-replace" target="_blank">Facebook</a>    </li>  </ul></div>
+      
+  </div>
+  
+  
+</div>
+
+      </div>
+      <a href="#0" class="wc-top">Top</a>
+
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle">
+      <span></span>
+    </label>
+
+    <script type="text/javascript">
+      var config = {
+        "browser_warning_page": "http://localhost:4000/browser-warning/",
+        "disqus_shortname": ""
+      };
+      /* Browser support detection */
+      var browserSupport = (function(){
+        var htmlElemClasses = document.querySelector('html').className.split(' ');
+        for ( var i = 0; i < htmlElemClasses.length; i += 1 ){
+          var className = htmlElemClasses[i];
+          if ( className === 'lt-ie9' ){
+            return true;
+          }
+        }
+      }());
+
+      if (browserSupport){
+        window.location="http://localhost:4000/browser-warning/";
+      }
+
+      /* To avoid render blocking css */
+      var cb = function() {
+        var l = document.createElement('link'); l.rel = 'stylesheet';
+        l.href = 'http://fonts.googleapis.com/css?family=PT+Sans';
+        var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+      };
+      var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+          webkitRequestAnimationFrame || msRequestAnimationFrame;
+      if (raf) raf(cb);
+      else window.addEventListener('load', cb);
+
+
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script async type="text/javascript" src="http://localhost:4000/assets/js/gaya.min.js"></script>
+
+    
+    
+  </body>
+</html>
