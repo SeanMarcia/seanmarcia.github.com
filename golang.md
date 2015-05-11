@@ -19,6 +19,8 @@ I've been learning and playing with golang and I wanted a place to store various
 
 [CLI Apps with Golang](http://thenewstack.io/cli-command-line-programming-with-go/)
 
+[CLI tool](https://github.com/codegangsta/cli)
+
 [Golang Examples](https://gobyexample.com/)
 
 [Golang Projects (like Rubygems)](http://awesome-go.com/)
