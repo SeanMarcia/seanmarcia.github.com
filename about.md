@@ -11,6 +11,7 @@ Hi, I'm Sean!
 Here are some fun facts about me:
 
 * Rubyist
+* Golang Aspirant
 * Coffee Roaster
 * Zymurgist
 * Food Lover
