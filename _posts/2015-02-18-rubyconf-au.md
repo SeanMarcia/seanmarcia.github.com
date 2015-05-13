@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Rubyconf Australia Retrospective"
-date:   2014-12-15 0:00:55
+date:   2015-02-18 0:00:55
 banner_image:
 category:
 - ruby
