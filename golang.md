@@ -30,3 +30,5 @@ I've been learning and playing with golang and I wanted a place to store various
 [Go Bootstrap](http://go-bootstrap.io/)
 
 [Seven5 web framework](http://seven5.github.io/)
+
+[Best Practices](http://blog.campoy.cat/2014/08/twelve-go-best-practices.html)
